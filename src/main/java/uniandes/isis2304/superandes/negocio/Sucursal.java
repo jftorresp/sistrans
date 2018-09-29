@@ -1,10 +1,11 @@
 package uniandes.isis2304.superandes.negocio;
 
 /**
- * Clase para modelar el concepto SUCURSAL del negocio de SuperAndes
+ * Clase para modelar el concepto Bodega del negocio de SuperAndes
  *
- * @author Juan Felipe Torres
+ * @author n.cobos, jf.torresp
  */
+
 public class Sucursal implements VOSucursal {
 	/* ****************************************************************
 	 * 			Atributos

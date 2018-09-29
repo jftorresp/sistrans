@@ -1,5 +1,5 @@
 package uniandes.isis2304.superandes.negocio;
 
-public class Carrito {
+public interface VOTransaccion {
 
 }

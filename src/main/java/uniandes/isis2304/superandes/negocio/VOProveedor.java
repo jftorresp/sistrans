@@ -1,5 +1,5 @@
 package uniandes.isis2304.superandes.negocio;
 
-public class ClienteEmpresa {
+public interface VOProveedor {
 
 }
