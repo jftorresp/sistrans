@@ -12,7 +12,7 @@ public class Sucursal implements VOSucursal {
 	 *****************************************************************/
 	
 	/**
-	 * El identificador ÃšNICO de las sucursales
+	 * El identificador único de las sucursales
 	 */
 	private long id;
 	
@@ -37,9 +37,9 @@ public class Sucursal implements VOSucursal {
 	private String segmentoMercado;
 	
 	/**
-	 * El tamano de la sucursal
+	 * El tamano de la sucursal en metros cuadrados
 	 */
-	private int tamano;
+	private double tamano;
 	
 	/**
 	 * El nombre del supermercado al que pertence la sucursal
@@ -54,7 +54,7 @@ public class Sucursal implements VOSucursal {
      */
 	public Sucursal() 
     {
-    		this.id = 0;
+    	this.id = 0;
 		this.nombre = "";
 		this.ciudad = "";
 		this.direccion = "";

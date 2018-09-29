@@ -6,6 +6,60 @@ package uniandes.isis2304.superandes.negocio;
  * @author n.cobos, jf.torresp
  */
 
-public class Supermercado {
+public class Supermercado implements VOSupermercado{
+	
+	/* ****************************************************************
+	 * 			Atributos
+	 *****************************************************************/
+	/**
+	 * Nombre del supermercado
+	 */
+	private String nombre;
+
+	
+	/* ****************************************************************
+	 * 			Métodos 
+	 *****************************************************************/
+	/**
+	 * Constructor por defecto.
+	 */
+	public Supermercado() {
+		this.nombre = "";
+	}
+	
+	
+	/**
+	 * Constructor con valores.
+	 * @param nombre del supermercado
+	 */
+	public Supermercado(String nombre) {
+		this.nombre = nombre;
+	}
+	
+	
+	
+	/**
+	 * @return the nombre
+	 */
+	public String getNombre() {
+		return nombre;
+	}
+
+
+	/**
+	 * @param nombre the nombre to set
+	 */
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Supermercado [nombre=" + nombre + "]";
+	}
 
 }

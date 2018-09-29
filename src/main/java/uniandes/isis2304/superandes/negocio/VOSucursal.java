@@ -1,8 +1,16 @@
 package uniandes.isis2304.superandes.negocio;
 
+/**
+ * Interfaz para los métodos get de SUCURSAL.
+ * Sirve para proteger la información del negocio de posibles manipulaciones desde la interfaz 
+ * 
+ * @author n.cobos, jf.torresp
+ */
+
 public interface VOSucursal {
+	
 	/* ****************************************************************
-	 * 			MÃ©todos 
+	 * 			Métodos 
 	 *****************************************************************/
     /**
 	 * @return El id de la sucursal
@@ -30,9 +38,9 @@ public interface VOSucursal {
 	public String getSegmentoMercado();
 	
 	/**
-	 * @return el tamano de la sucursal
+	 * @return el tamano de la sucursal en metros cuadrados
 	 */
-	public int getTamano();
+	public double getTamano();
 	
 	/**
 	 * @return el supermercado al que pertenece la sucursal
