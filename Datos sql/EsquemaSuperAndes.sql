@@ -1,4 +1,4 @@
---- Sentencias SQL para la creaci�n del esquema de SuperAndes
+﻿--- Sentencias SQL para la creaci�n del esquema de SuperAndes
 --- Las tablas tienen prefijo A_ para facilitar su acceso desde SQL Developer
 
 -- USO
@@ -54,6 +54,7 @@ CREATE TABLE A_BODEGA
 	CAPACIDADPESO NUMBER NOT NULL,
 	PRODUCTO NUMBER NOT NULL,
 	SUCURSAL NUMBER NOT NULL,
+	EXISTENCIAS NUMBER NOT NULL,
 	CONSTRAINT A_BODEGA_PK PRIMARY KEY (ID));
 
 ALTER TABLE A_BODEGA
@@ -76,6 +77,11 @@ ENABLE;
 ALTER TABLE A_BODEGA
 	ADD CONSTRAINT CK_B_PESO
 	CHECK (capacidadpeso > 0)
+ENABLE;
+
+ALTER TABLE A_BODEGA
+	ADD CONSTRAINT CK_B_EXISTENCIAS
+	CHECK (existencias > 0)
 ENABLE;
 
 -- Creaci�n de la tabla estante y especificaci�n de sus restricciones.
