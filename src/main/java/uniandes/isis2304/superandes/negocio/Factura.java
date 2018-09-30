@@ -15,7 +15,7 @@ public class Factura implements VOFactura{
 	 *****************************************************************/
 	
 	/**
-	 * El identificador ÚNICO de las facturas
+	 * El identificador ÃšNICO de las facturas
 	 */
 	private long numero;
 	
@@ -30,12 +30,12 @@ public class Factura implements VOFactura{
 	private String cliente;
 	
 	/**
-	 * Sucursal donde se emitió la factura
+	 * Sucursal donde se emitiï¿½ la factura
 	 */
 	private long sucursal;
 	
 	/* ****************************************************************
-	 * 			Métodos
+	 * 			Mï¿½todos
 	 *****************************************************************/
 	/**
 	 * Constructor por defecto
