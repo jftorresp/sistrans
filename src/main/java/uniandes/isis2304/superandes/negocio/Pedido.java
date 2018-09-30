@@ -3,7 +3,7 @@ package uniandes.isis2304.superandes.negocio;
 import java.sql.Timestamp;
 
 /**
- * Clase para modelar el concepto Pedido del negocio de SuperAndes
+ * Clase para modelar el concepto PEDIDO del negocio de SuperAndes
  *
  * @author n.cobos, jf.torresp
  */

@@ -24,10 +24,6 @@ public interface VOPedido {
 	 */
 	public long getSucursal();
 	
-	/**
-	 * @return El producto del que se hace el pedido
-	 */
-	public long getProducto();
 	
 	/**
 	 * @return El proveedor al que se le hace el pedido
@@ -43,12 +39,6 @@ public interface VOPedido {
 	 * @return El estado de la orden
 	 */
 	public String getEstadoOrden();
-
-	
-	/**
-	 * @return El numero de unidades solicitadas
-	 */
-	public int getCantidad();
 
 	
 	/**
