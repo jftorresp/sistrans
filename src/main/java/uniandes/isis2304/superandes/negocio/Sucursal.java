@@ -12,7 +12,7 @@ public class Sucursal implements VOSucursal {
 	 *****************************************************************/
 	
 	/**
-	 * El identificador único de las sucursales
+	 * El identificador ï¿½nico de las sucursales
 	 */
 	private long id;
 	
@@ -168,7 +168,7 @@ public class Sucursal implements VOSucursal {
 	 * @return El tamano de la sucursal
 	 */
 	@Override
-	public int getTamano() {
+	public double getTamano() {
 		return tamano;
 	}
 	
