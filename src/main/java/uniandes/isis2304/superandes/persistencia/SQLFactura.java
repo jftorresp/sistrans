@@ -95,7 +95,7 @@ class SQLFactura {
 	 * @param numero - El numero de la factura
 	 * @return Una lista de objetos FACTURA que tienen el numero dado
 	 */
-	public List<Factura> darFacturasPorNumero (PersistenceManager pm, String numero) 
+	public List<Factura> darFacturasPorNumero (PersistenceManager pm, long numero) 
 	{
 		Query q = pm.newQuery(SQL, "SELECT * FROM " + pp.darTablaFactura() + " WHERE numero = ?");
 		q.setResultClass(Factura.class);
@@ -170,7 +170,7 @@ class SQLFactura {
 	 * @param pm - El manejador de persistencia
 	 * @return Una lista de objetos FACTURA
 	 */
-	public List<Factura> darFacturas (PersistenceManager pm)
+	public List<Factura> darFacturas(PersistenceManager pm)
 	{
 		Query q = pm.newQuery(SQL, "SELECT * FROM " + pp.darTablaFactura());
 		q.setResultClass(Factura.class);

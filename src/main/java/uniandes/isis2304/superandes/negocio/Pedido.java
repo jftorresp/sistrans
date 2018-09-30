@@ -19,11 +19,6 @@ public class Pedido implements VOPedido{
 	private long id;
 
 	/**
-	 * El identificador del producto pedido
-	 */
-	private long producto;
-
-	/**
 	 * El identificador del proveedor encargado del pedido
 	 */
 	private long proveedor;
@@ -51,7 +46,7 @@ public class Pedido implements VOPedido{
 
 
 	/**
-	 *  La calificación del pedido y el proveedor
+	 *  La calificaciï¿½n del pedido y el proveedor
 	 */
 	private int calificacion;
 
@@ -61,7 +56,7 @@ public class Pedido implements VOPedido{
 	private double costoTotal;
 
 	/****************************************************************
-	 * 			Métodos
+	 * 			Mï¿½todos
 	 *****************************************************************/
 	/**
 	 * Constructor por defecto
@@ -69,7 +64,6 @@ public class Pedido implements VOPedido{
 	
 	public Pedido() {
 		this.id = 0;
-		this.producto = 0;
 		this.proveedor = 0;
 		this.sucursal = 0;
 		this.fechaEntrega = new Timestamp(0);
@@ -82,7 +76,6 @@ public class Pedido implements VOPedido{
 	/**
 	 * Metodo constructor con valores
 	 * @param id
-	 * @param producto
 	 * @param proveedor
 	 * @param sucursal
 	 * @param fechaEntrega
@@ -94,7 +87,6 @@ public class Pedido implements VOPedido{
 	public Pedido(long id, long producto, long proveedor, long sucursal, Timestamp fechaEntrega, String estadoOrden,
 			int cantidad, int calificacion, double costoTotal) {
 		this.id = id;
-		this.producto = producto;
 		this.proveedor = proveedor;
 		this.sucursal = sucursal;
 		this.fechaEntrega = fechaEntrega;
@@ -113,14 +105,6 @@ public class Pedido implements VOPedido{
 
 	public void setId(long id) {
 		this.id = id;
-	}
-
-	public long getProducto() {
-		return producto;
-	}
-
-	public void setProducto(long producto) {
-		this.producto = producto;
 	}
 
 	public long getProveedor() {
@@ -181,7 +165,7 @@ public class Pedido implements VOPedido{
 
 	@Override
 	public String toString() {
-		return "Pedido [id=" + id + ", producto=" + producto + ", proveedor=" + proveedor + ", sucursal=" + sucursal
+		return "Pedido [id=" + id + ", proveedor=" + proveedor + ", sucursal=" + sucursal
 				+ ", fechaEntrega=" + fechaEntrega + ", estadoOrden=" + estadoOrden + ", cantidad=" + cantidad
 				+ ", calificacion=" + calificacion + ", costoTotal=" + costoTotal + "]";
 	}
