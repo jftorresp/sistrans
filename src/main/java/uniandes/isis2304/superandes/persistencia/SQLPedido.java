@@ -9,6 +9,12 @@ import javax.jdo.Query;
 import uniandes.isis2304.superandes.negocio.Factura;
 import uniandes.isis2304.superandes.negocio.Pedido;
 
+/**
+ * Clase que encapsula los métodos que hacen acceso a la base de datos para el concepto PEDIDO de SuperAndes
+ * Nótese que es una clase que es sólo conocida en el paquete de persistencia
+ * 
+ * @author n.cobos, jf.torresp
+ */
 class SQLPedido {
 
 	/* ****************************************************************
@@ -208,5 +214,18 @@ class SQLPedido {
 		q.setResultClass(Pedido.class);
 		q.setParameters(fechaEntrega);
 		return (List<Pedido>) q.executeList();
+	}
+	
+	/**
+	 * Crea y ejecuta la sentencia SQL para eliminar PEDIDOS de la base de datos de Superandes dado el estado de orden: entregado
+	 * @param pm - El manejador de persistencia
+	 * @param estadoorden - el estado de orden del pedido (entregado)
+	 * @return EL número de tuplas eliminadas
+	 */
+	public long eliminarPedidosTerminados(PersistenceManager pm, String estadoOrden)
+	{
+        Query q = pm.newQuery(SQL, "DELETE FROM " + pp.darTablaPedido() + " WHERE estadoorden = 'Entregado'");
+        q.setParameters(estadoOrden);
+        return (long) q.executeUnique();
 	}
 }

@@ -17,7 +17,7 @@ public class Subpedido implements VOSubpedido{
 	private long producto;
 	
 	/**
-	 *  El pedido al que está asociado
+	 *  El pedido al que estï¿½ asociado
 	 */
 	private long pedido;
 	
@@ -29,10 +29,10 @@ public class Subpedido implements VOSubpedido{
 	/**
 	 *  El costo de las unidades solicitadas
 	 */
-	private int costo;
+	private double costo;
 
 	/* ****************************************************************
-	 * 			Métodos
+	 * 			Mï¿½todos
 	 *****************************************************************/
 	/**
 	 * Constructor por defecto
@@ -51,7 +51,7 @@ public class Subpedido implements VOSubpedido{
 	 * @param cantidad
 	 * @param costo
 	 */
-	public Subpedido(long producto, long pedido, int cantidad, int costo) {
+	public Subpedido(long producto, long pedido, int cantidad, double costo) {
 		this.producto = producto;
 		this.pedido = pedido;
 		this.cantidad = cantidad;
@@ -103,14 +103,14 @@ public class Subpedido implements VOSubpedido{
 	/**
 	 * @return the costo
 	 */
-	public int getCosto() {
+	public double getCosto() {
 		return costo;
 	}
 
 	/**
 	 * @param costo the costo to set
 	 */
-	public void setCosto(int costo) {
+	public void setCosto(double costo) {
 		this.costo = costo;
 	}
 

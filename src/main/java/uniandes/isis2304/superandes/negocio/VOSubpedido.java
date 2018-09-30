@@ -1,15 +1,15 @@
 package uniandes.isis2304.superandes.negocio;
 
 /**
- * Interfaz para los métodos get de SUBPEDIDO.
- * Sirve para proteger la información del negocio de posibles manipulaciones desde la interfaz 
+ * Interfaz para los mï¿½todos get de SUBPEDIDO.
+ * Sirve para proteger la informaciï¿½n del negocio de posibles manipulaciones desde la interfaz 
  * 
  * @author n.cobos, jf.torresp
  */
 
 public interface VOSubpedido {
 	/* ****************************************************************
-	 * 			Métodos
+	 * 			Mï¿½todos
 	 *****************************************************************/
 	
 	/**
@@ -18,7 +18,7 @@ public interface VOSubpedido {
 	public long getProducto();
 	
 	/**
-	 * @return El pedido al que está asociado
+	 * @return El pedido al que estï¿½ asociado
 	 */
 	public long getPedido();
 	
@@ -30,10 +30,10 @@ public interface VOSubpedido {
 	/**
 	 * @return El costo de las unidades solicitadas
 	 */
-	public int getCosto();
+	public double getCosto();
 	
 	/** 
-	 * @return Una cadena con la información básica
+	 * @return Una cadena con la informaciï¿½n bï¿½sica
 	 */
 	@Override
 	public String toString();
