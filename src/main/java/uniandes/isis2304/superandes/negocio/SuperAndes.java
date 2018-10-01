@@ -340,5 +340,114 @@ public class SuperAndes {
         log.info ("Generando los VO de Productos: " + voProductos.size() + " existentes");
         return voProductos;
 	}
+	
+	/* ****************************************************************
+	 * 			Métodos para manejar las BODEGAS
+	 *****************************************************************/
+	
+	/**
+	 * Adiciona de manera persistente un producto
+	 * Adiciona entradas al log de la aplicación
+	 * @param nombre - El nombre del producto
+	 * @param marca - La marca del producto
+     * @param presentacion - La presentacion del producto
+	 * @param codigobarras - El código de barras del producto
+	 * @param unidadmedida - Las unidades de medida del producto
+	 * @param categoria - Ls categoria del producto (perecederos, no perecederos, aseo, abarrotes, etc)
+	 * @return El objeto Producto adicionado. null si ocurre alguna Excepción
+	 */
+	public Bodega adicionarBodega(long idBodega, double capacidadVolumen, double capacidadPeso, long producto, long sucursal, int existencias)
+	{
+        log.info ("Adicionando Bodega: " + idBodega);
+        Bodega bodega = pp.adicionarBodega(capacidadVolumen, capacidadPeso, producto, sucursal, existencias);
+        log.info ("Adicionando Bodega: " + bodega);
+        return bodega;
+	}
+	
+	/**
+	 * Elimina una bodega por su identificador
+	 * Adiciona entradas al log de la aplicación
+	 * @param idBodega - El id de la bodega eliminar
+	 * @return El número de tuplas eliminadas
+	 */
+	public long eliminarBodegaPorId (long idBodega)
+	{
+		log.info ("Eliminando Bodega por id: " + idBodega);
+        long resp = pp.eliminarBodegaPorId(idBodega);	
+        log.info ("Eliminando Bodega por id: " + resp + " tuplas eliminadas");
+        return resp;
+	}
+	
+	/**
+	 * Encuentra una bodega y su información básica, según su identificador
+	 * @param idBodega - El identificador de la bodega buscada
+	 * @return Un objeto Bodega que corresponde con el id buscado y lleno con su información básica
+	 * 			null, si una bodega con dicho id no existe
+	 */
+	public Bodega darBodegaPorId(long idBodega)
+	{
+        log.info ("Dar información de una bodega por id: " + idBodega);
+        Bodega bodega = pp.darBodegaPorId(idBodega);
+        log.info ("Buscando bodega por id: " + bodega != null ? bodega : "NO EXISTE");
+        return bodega;
+	}
+	
+	/**
+	 * Encuentra la información básica de las bodegas, según su sucursal
+	 * @param sucursal - La sucursal a la que pertenece la bodega
+	 * @return Una lista de Bodegas con su información básica, donde todos tienen la sucursal buscada.
+	 * 	La lista vacía indica que no existen bodegas con esa sucursal.
+	 */
+	public List<Bodega> darBodegasPorSucursal(long sucursal)
+	{
+        log.info ("Dar información de bodegas por sucursal: " + sucursal);
+        List<Bodega> bodegas = pp.darBodegasPorSucursal(sucursal);
+        log.info ("Dar información de Bodegas por sucursal: " + bodegas.size() + " bodegas con esa sucursal existentes");
+        return bodegas;
+ 	}
+	
+	/**
+	 * Encuentra todos las bodegas en SuperAndes
+	 * Adiciona entradas al log de la aplicación
+	 * @return Una lista de objetos Bodega con todos los productos que conoce la aplicación, llenos con su información básica
+	 */
+	public List<Bodega> darBodegas()
+	{
+		log.info ("Consultando Bodegas");
+        List<Bodega> bodegas = pp.darBodegas();	
+        log.info ("Consultando Bodegas: " + bodegas.size() + " existentes");
+        return bodegas;
+	}
+	
+	/**
+	 * Encuentra todos las bodegas en SuperAndes y los devuelve como una lista de VOBodega
+	 * Adiciona entradas al log de la aplicación
+	 * @return Una lista de objetos VOBodega con todas las bodegas que conoce la aplicación, llenos con su información básica
+	 */
+	public List<VOBodega> darVOBodega()
+	{
+		log.info ("Generando los VO de bodegas");        
+        List<VOBodega> voBodegas = new LinkedList<VOBodega> ();
+        for (Bodega bodega : pp.darBodegas())
+        {
+        	voBodegas.add (bodega);
+        }
+        log.info ("Generando los VO de Bodegas: " + voBodegas.size() + " existentes");
+        return voBodegas;
+	}
+	
+	/**
+	 * Aumenta las existencias en 10 unidades de una bodega con id dado
+	 * @return Las tuplas modificadas con el aumento de existencias
+	 */
+	public long aumentarExistenciasBodegaEnDiez(long idBodega)
+	{
+		log.info("Aumentando eixstencias de la bodega en diez");
+		long aumento = pp.aumentarExistenciasBodegaEnDiez(idBodega);
+		log.info("Bodega con id: " + idBodega + "aumentada en 10 sus existencias");
+		return aumento;
+	}
+	
+	
 
 }

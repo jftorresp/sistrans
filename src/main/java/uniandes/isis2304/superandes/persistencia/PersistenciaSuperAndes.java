@@ -15,6 +15,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import uniandes.isis2304.superandes.negocio.Bodega;
 import uniandes.isis2304.superandes.negocio.Producto;
 import uniandes.isis2304.superandes.negocio.Sucursal;
 import uniandes.isis2304.superandes.negocio.Supermercado;
@@ -775,6 +776,117 @@ public class PersistenciaSuperAndes {
 	/* ****************************************************************
 	 * 			Métodos para manejar las BODEGAS
 	 *****************************************************************/
-
-
+	
+	/**
+	 * Método que inserta, de manera transaccional, una tupla en la tabla BODEGAs
+	 * Adiciona entradas al log de la aplicación
+	 * @param capacidadVolumen - La capacidad en volumen de la bodega (metros cúbicos)
+	 * @param capacidadPeso - La capacidad en peso de la bodega (en kg)
+	 * @param producto - Identificador del producto que almacena la bodega
+	 * @param sucursal - La sucursal a la que pertenece la bodega
+	 * @param existencias - Las existencias disponibles en la bodega
+	 * @return El objeto Bodega adicionado. null si ocurre alguna Excepción
+	 */
+	public Bodega adicionarBodega(double capacidadVolumen, double capacidadPeso, long producto, long sucursal, int existencias)
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+        Transaction tx=pm.currentTransaction();
+        try
+        {
+            tx.begin();
+            long idBodega = nextval ();
+            long tuplasInsertadas = sqlBodega.adicionarBodega(pm, idBodega, capacidadVolumen, capacidadPeso, producto, sucursal, existencias);
+            tx.commit();
+            
+            log.trace ("Inserción de la bodega: " + idBodega + ": " + tuplasInsertadas + " tuplas insertadas");
+            
+            return new Bodega(idBodega, capacidadVolumen, capacidadPeso, existencias, producto, sucursal);
+        }
+        catch (Exception e)
+        {
+//        	e.printStackTrace();
+        	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+        	return null;
+        }
+        finally
+        {
+            if (tx.isActive())
+            {
+                tx.rollback();
+            }
+            pm.close();
+        }
+	}
+	
+	/**
+	 * Método que elimina, de manera transaccional, una tupla en la tabla Bodega, dado el identificador de la bodega
+	 * Adiciona entradas al log de la aplicación
+	 * @param idBodega - El identificador de la bodega
+	 * @return El número de tuplas eliminadas. -1 si ocurre alguna Excepción
+	 */
+	public long eliminarBodegaPorId (long idBodega) 
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+        Transaction tx=pm.currentTransaction();
+        try
+        {
+            tx.begin();
+            long resp = sqlBodega.eliminarBodegaPorId(pm, idBodega);
+            tx.commit();
+            return resp;
+        }
+        catch (Exception e)
+        {
+//        	e.printStackTrace();
+        	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+            return -1;
+        }
+        finally
+        {
+            if (tx.isActive())
+            {
+                tx.rollback();
+            }
+            pm.close();
+        }
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Bodega con un identificador dado
+	 * @param idBodega - El identificador de la bodega
+	 * @return El objeto Bodega, construido con base en las tuplas de la tabla BODEGA con el identificador dado
+	 */
+	public Bodega darBodegaPorId(long idBodega)
+	{
+		return sqlBodega.darBodegaPorId(pmf.getPersistenceManager(), idBodega);
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Bodega que tienen una sucursal dada
+	 * @param sucursal - La sucursal a la que pertenece la bodega
+	 * @return La lista de objetos Bodega, construidos con base en las tuplas de la tabla BODEGA
+	 */
+	public List<Bodega> darBodegasPorSucursal(long sucursal)
+	{
+		return sqlBodega.darBodegasPorSucursal(pmf.getPersistenceManager(), sucursal);
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Bodega
+	 * @return La lista de objetos Bodega, construidos con base en las tuplas de la tabla BODEGA
+	 */
+	public List<Bodega> darBodegas()
+	{
+		return sqlBodega.darBodegas(pmf.getPersistenceManager());
+	}
+	
+	/**
+	 * Método que aumenta las existencias en 10 unidades de una bodega con id dado
+	 * @return Las tuplas modificadas con el aumento de existencias
+	 */
+	public long aumentarExistenciasBodegaEnDiez(long idBodega)
+	{
+		return sqlBodega.aumentarExistenciasBodegasEnDiez(pmf.getPersistenceManager(), idBodega);
+	}
+	
 }
