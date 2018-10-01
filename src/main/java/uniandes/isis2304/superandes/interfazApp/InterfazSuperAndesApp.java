@@ -22,8 +22,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 
-import uniandes.isis2304.parranderos.interfazApp.PanelDatos;
-import uniandes.isis2304.parranderos.negocio.Parranderos;
 import uniandes.isis2304.superandes.negocio.SuperAndes;
 
 /**
@@ -38,17 +36,17 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener
 	 * 			Constantes
 	 *****************************************************************/
 	/**
-	 * Logger para escribir la traza de la ejecución
+	 * Logger para escribir la traza de la ejecuciï¿½n
 	 */
 	private static Logger log = Logger.getLogger(InterfazSuperAndesApp.class.getName());
 	
 	/**
-	 * Ruta al archivo de configuración de la interfaz
+	 * Ruta al archivo de configuraciï¿½n de la interfaz
 	 */
 	private final String CONFIG_INTERFAZ = "./src/main/resources/config/interfaceConfigDemo.json"; 
 	
 	/**
-	 * Ruta al archivo de configuración de los nombres de tablas de la base de datos
+	 * Ruta al archivo de configuraciï¿½n de los nombres de tablas de la base de datos
 	 */
 	private static final String CONFIG_TABLAS = "./src/main/resources/config/TablasBD_A.json"; 
 
@@ -61,7 +59,7 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener
     private JsonObject tableConfig;
     
     /**
-     * Asociación a la clase principal del negocio.
+     * Asociaciï¿½n a la clase principal del negocio.
      */
     private SuperAndes superandes;
     
@@ -69,33 +67,33 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener
 	 * 			Atributos de interfaz
 	 *****************************************************************/
     /**
-     * Objeto JSON con la configuración de interfaz de la app.
+     * Objeto JSON con la configuraciï¿½n de interfaz de la app.
      */
     private JsonObject guiConfig;
     
     /**
-     * Panel de despliegue de interacción para los requerimientos
+     * Panel de despliegue de interacciï¿½n para los requerimientos
      */
     private PanelDatos panelDatos;
     
     /**
-     * Menú de la aplicación
+     * Menï¿½ de la aplicaciï¿½n
      */
     private JMenuBar menuBar;
 
 	/* ****************************************************************
-	 * 			Métodos
+	 * 			Mï¿½todos
 	 *****************************************************************/
     /**
-     * Construye la ventana principal de la aplicación. <br>
+     * Construye la ventana principal de la aplicaciï¿½n. <br>
      * <b>post:</b> Todos los componentes de la interfaz fueron inicializados.
      */
     public InterfazSuperAndesApp( )
     {
-        // Carga la configuración de la interfaz desde un archivo JSON
+        // Carga la configuraciï¿½n de la interfaz desde un archivo JSON
         guiConfig = openConfig ("Interfaz", CONFIG_INTERFAZ);
         
-        // Configura la apariencia del frame que contiene la interfaz gráfica
+        // Configura la apariencia del frame que contiene la interfaz grï¿½fica
         configurarFrame ( );
         if (guiConfig != null) 	   
         {
@@ -103,7 +101,7 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener
         }
         
         tableConfig = openConfig ("Tablas BD", CONFIG_TABLAS);
-        parranderos = new Parranderos (tableConfig);
+        superandes = new SuperAndes(tableConfig);
         
     	String path = guiConfig.get("bannerPath").getAsString();
         panelDatos = new PanelDatos ( );
@@ -114,13 +112,13 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener
     }
     
 	/* ****************************************************************
-	 * 			Métodos para la configuración de la interfaz
+	 * 			Mï¿½todos para la configuraciï¿½n de la interfaz
 	 *****************************************************************/
     /**
-     * Lee datos de configuración para la aplicación, a partir de un archivo JSON o con valores por defecto si hay errores.
-     * @param tipo - El tipo de configuración deseada
-     * @param archConfig - Archivo Json que contiene la configuración
-     * @return Un objeto JSON con la configuración del tipo especificado
+     * Lee datos de configuraciï¿½n para la aplicaciï¿½n, a partir de un archivo JSON o con valores por defecto si hay errores.
+     * @param tipo - El tipo de configuraciï¿½n deseada
+     * @param archConfig - Archivo Json que contiene la configuraciï¿½n
+     * @return Un objeto JSON con la configuraciï¿½n del tipo especificado
      * 			NULL si hay un error en el archivo.
      */
     private JsonObject openConfig (String tipo, String archConfig)
@@ -132,19 +130,19 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener
 			FileReader file = new FileReader (archConfig);
 			JsonReader reader = new JsonReader ( file );
 			config = gson.fromJson(reader, JsonObject.class);
-			log.info ("Se encontró un archivo de configuración válido: " + tipo);
+			log.info ("Se encontrï¿½ un archivo de configuraciï¿½n vï¿½lido: " + tipo);
 		} 
 		catch (Exception e)
 		{
 //			e.printStackTrace ();
-			log.info ("NO se encontró un archivo de configuración válido");			
-			JOptionPane.showMessageDialog(null, "No se encontró un archivo de configuración de interfaz válido: " + tipo, "Parranderos App", JOptionPane.ERROR_MESSAGE);
+			log.info ("NO se encontrï¿½ un archivo de configuraciï¿½n vï¿½lido");			
+			JOptionPane.showMessageDialog(null, "No se encontrï¿½ un archivo de configuraciï¿½n de interfaz vï¿½lido: " + tipo, "Parranderos App", JOptionPane.ERROR_MESSAGE);
 		}	
         return config;
     }
     
     /**
-     * Método para configurar el frame principal de la aplicación
+     * Mï¿½todo para configurar el frame principal de la aplicaciï¿½n
      */
     private void configurarFrame(  )
     {
@@ -154,14 +152,14 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener
     	
     	if ( guiConfig == null )
     	{
-    		log.info ( "Se aplica configuración por defecto" );			
+    		log.info ( "Se aplica configuraciï¿½n por defecto" );			
 			titulo = "Parranderos APP Default";
 			alto = 300;
 			ancho = 500;
     	}
     	else
     	{
-			log.info ( "Se aplica configuración indicada en el archivo de configuración" );
+			log.info ( "Se aplica configuraciï¿½n indicada en el archivo de configuraciï¿½n" );
     		titulo = guiConfig.get("title").getAsString();
 			alto= guiConfig.get("frameH").getAsInt();
 			ancho = guiConfig.get("frameW").getAsInt();
@@ -177,17 +175,17 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener
     }
 
     /**
-     * Método para crear el menú de la aplicación con base em el objeto JSON leído
-     * Genera una barra de menú y los menús con sus respectivas opciones
-     * @param jsonMenu - Arreglo Json con los menùs deseados
+     * Mï¿½todo para crear el menï¿½ de la aplicaciï¿½n con base em el objeto JSON leï¿½do
+     * Genera una barra de menï¿½ y los menï¿½s con sus respectivas opciones
+     * @param jsonMenu - Arreglo Json con los menï¿½s deseados
      */
     private void crearMenu(  JsonArray jsonMenu )
     {    	
-    	// Creación de la barra de menús
+    	// Creaciï¿½n de la barra de menï¿½s
         menuBar = new JMenuBar();       
         for (JsonElement men : jsonMenu)
         {
-        	// Creación de cada uno de los menús
+        	// Creaciï¿½n de cada uno de los menï¿½s
         	JsonObject jom = men.getAsJsonObject(); 
 
         	String menuTitle = jom.get("menuTitle").getAsString();        	
@@ -197,7 +195,7 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener
         	
         	for (JsonElement op : opciones)
         	{       	
-        		// Creación de cada una de las opciones del menú
+        		// Creaciï¿½n de cada una de las opciones del menï¿½
         		JsonObject jo = op.getAsJsonObject(); 
         		String lb =   jo.get("label").getAsString();
         		String event = jo.get("event").getAsString();
