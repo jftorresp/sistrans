@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileReader;
+import java.lang.reflect.Method;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -13,6 +14,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
 import org.apache.log4j.Logger;
 
@@ -43,7 +45,7 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener
 	/**
 	 * Ruta al archivo de configuraciï¿½n de la interfaz
 	 */
-	private final String CONFIG_INTERFAZ = "./src/main/resources/config/interfaceConfigDemo.json"; 
+	private static final String CONFIG_INTERFAZ = "./src/main/resources/config/interfaceConfigApp.json"; 
 	
 	/**
 	 * Ruta al archivo de configuraciï¿½n de los nombres de tablas de la base de datos
@@ -130,13 +132,13 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener
 			FileReader file = new FileReader (archConfig);
 			JsonReader reader = new JsonReader ( file );
 			config = gson.fromJson(reader, JsonObject.class);
-			log.info ("Se encontrï¿½ un archivo de configuraciï¿½n vï¿½lido: " + tipo);
+			log.info ("Se encontró un archivo de configuración válido: " + tipo);
 		} 
 		catch (Exception e)
 		{
-//			e.printStackTrace ();
+			e.printStackTrace ();
 			log.info ("NO se encontrï¿½ un archivo de configuraciï¿½n vï¿½lido");			
-			JOptionPane.showMessageDialog(null, "No se encontrï¿½ un archivo de configuraciï¿½n de interfaz vï¿½lido: " + tipo, "Parranderos App", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "No se encontró un archivo de configuración de interfaz válido: " + tipo, "Superandes App", JOptionPane.ERROR_MESSAGE);
 		}	
         return config;
     }
@@ -153,7 +155,7 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener
     	if ( guiConfig == null )
     	{
     		log.info ( "Se aplica configuraciï¿½n por defecto" );			
-			titulo = "Parranderos APP Default";
+			titulo = "Superandes APP Default";
 			alto = 300;
 			ancho = 500;
     	}
@@ -211,9 +213,56 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener
         setJMenuBar ( menuBar );	
     }
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
+	public void actionPerformed(ActionEvent pEvento) {
+		String evento = pEvento.getActionCommand( );		
+        try 
+        {
+			Method req = InterfazSuperAndesApp.class.getMethod ( evento );			
+			req.invoke ( this );
+		} 
+        catch (Exception e) 
+        {
+			e.printStackTrace();
+		} 
 	}
+	
+	/**
+     * Muestra la información acerca del desarrollo de esta apicación
+     */
+    public void acercaDe ()
+    {
+		String resultado = "\n\n ************************************\n\n";
+			
+		resultado += " * Curso: isis2304 - Sistemas Transaccionales\n";
+		resultado += " * Proyecto: SuperAndes\n";
+		resultado += " * @author n.cobos, jf.torresp\n";
+		
+		resultado += "\n ************************************\n\n";
+
+		panelDatos.actualizarInterfaz(resultado);		
+    }
+    
+    /* ****************************************************************
+	 * 			Programa principal
+	 *****************************************************************/
+    /**
+     * Este método ejecuta la aplicación, creando una nueva interfaz
+     * @param args Arreglo de argumentos que se recibe por línea de comandos
+     */
+    public static void main( String[] args )
+    {
+        try
+        {
+        	
+            // Unifica la interfaz para Mac y para Windows.
+            UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName( ) );
+            InterfazSuperAndesApp interfaz = new InterfazSuperAndesApp( );
+            interfaz.setVisible( true );
+        }
+        catch( Exception e )
+        {
+            e.printStackTrace( );
+        }
+    }
 
 }
