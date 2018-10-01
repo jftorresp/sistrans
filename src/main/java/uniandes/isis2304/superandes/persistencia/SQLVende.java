@@ -5,6 +5,7 @@ import java.util.List;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import uniandes.isis2304.superandes.negocio.Subpedido;
 import uniandes.isis2304.superandes.negocio.Vende;
 
 /**
@@ -122,5 +123,35 @@ class SQLVende {
 		Query q = pm.newQuery(SQL, "SELECT * FROM " + pp.darTablaVende());
 		q.setResultClass(Vende.class);
 		return (List<Vende>) q.execute();
+	}
+	
+	/**
+	 * Crea y ejecuta la sentencia SQL para encontrar la información de VENDE de la 
+	 * base de datos de Superandes, por su identificador de productos
+	 * @param pm - El manejador de persistencia
+	 * @param producto - El identificador del producto
+	 * @return Una lista de objetos VENDE que tienen el identificador dado
+	 */
+	public List<Vende> darVendenPorProducto(PersistenceManager pm, long producto) 
+	{
+		Query q = pm.newQuery(SQL, "SELECT * FROM " + pp.darTablaVende() + " WHERE idproducto = ?");
+		q.setResultClass(Vende.class);
+		q.setParameters(producto);
+		return (List<Vende>) q.executeList();
+	}
+	
+	/**
+	 * Crea y ejecuta la sentencia SQL para encontrar la información de VENDE de la 
+	 * base de datos de Superandes, por su identificador de sucursal
+	 * @param pm - El manejador de persistencia
+	 * @param sucursal - El identificador de la sucursal
+	 * @return Una lista de objetos VENDE que tienen el identificador dado
+	 */
+	public List<Vende> darVendenPorSucursal(PersistenceManager pm, long sucursal) 
+	{
+		Query q = pm.newQuery(SQL, "SELECT * FROM " + pp.darTablaVende() + " WHERE idsucursal = ?");
+		q.setResultClass(Vende.class);
+		q.setParameters(sucursal);
+		return (List<Vende>) q.executeList();
 	}
 }

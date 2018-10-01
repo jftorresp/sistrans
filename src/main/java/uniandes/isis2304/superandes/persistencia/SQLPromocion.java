@@ -1,9 +1,13 @@
 package uniandes.isis2304.superandes.persistencia;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
+
+import uniandes.isis2304.superandes.negocio.Promocion;
+import uniandes.isis2304.superandes.negocio.Subpedido;
 
 /**
  * Clase que encapsula los métodos que hacen acceso a la base de datos para el concepto PROMOCION de SuperAndes
@@ -60,8 +64,73 @@ class SQLPromocion {
         return (long) q.executeUnique();            
 	}
 	
+	/**
+	 * Crea y ejecuta la sentencia SQL para eliminar PROMOCIONES de la base de datos de Superandes, por su id
+	 * @param pm - El manejador de persistencia
+	 * @param id - El identificador de la promocion
+	 * @return EL número de tuplas eliminadas
+	 */
+	public long eliminarPromocionPorId(PersistenceManager pm, long id)
+	{
+        Query q = pm.newQuery(SQL, "DELETE FROM " + pp.darTablaPromocion() + " WHERE id = ?");
+        q.setParameters(id);
+        return (long) q.executeUnique();
+	}
 	
+	/**
+	 * Crea y ejecuta la sentencia SQL para eliminar TODAS LAS PROMOCIONES de la base de datos de SuperAndes
+	 * @param pm - El manejador de persistencia
+	 * @return EL número de tuplas eliminadas
+	 */
+	public long eliminarPromocion(PersistenceManager pm) 
+	{
+        Query q = pm.newQuery(SQL, "DELETE FROM " + pp.darTablaPromocion());
+        return (long) q.executeUnique();
+	}
 	
+	/**
+	 * Crea y ejecuta la sentencia SQL para encontrar la información de PROMOCION de la 
+	 * base de datos de Superandes, por su identificador de sucursal
+	 * @param pm - El manejador de persistencia
+	 * @param idSucursal - El identificador de la sucursal
+	 * @return Una lista de objetos PROMOCION que tienen el identifiacor dado
+	 */
+	public List<Promocion> darPromocionesPorSucursal(PersistenceManager pm, long idSucursal) 
+	{
+		Query q = pm.newQuery(SQL, "SELECT * FROM " + pp.darTablaPromocion() + " WHERE idsucursal = ?");
+		q.setResultClass(Promocion.class);
+		q.setParameters(idSucursal);
+		return (List<Promocion>) q.executeList();
+	}
 	
-
+	/**
+	 * Crea y ejecuta la sentencia SQL para encontrar la información de PROMOCION de la 
+	 * base de datos de Superandes, por su identificador de sucursal
+	 * @param pm - El manejador de persistencia
+	 * @param idProducto - El identificador del producto
+	 * @return Una lista de objetos PROMOCION que tienen el identifiacor dado
+	 */
+	public List<Promocion> darPromocionesPorProducto(PersistenceManager pm, long idProducto) 
+	{
+		Query q = pm.newQuery(SQL, "SELECT * FROM " + pp.darTablaPromocion() + " WHERE idproducto = ?");
+		q.setResultClass(Promocion.class);
+		q.setParameters(idProducto);
+		return (List<Promocion>) q.executeList();
+	}
+	
+	/**
+	 * Crea y ejecuta la sentencia SQL para encontrar la información de PROMOCION de la 
+	 * base de datos de Superandes, por su identificador de sucursal y producto
+	 * @param pm - El manejador de persistencia
+	 * @param idSucursal - El identificador de la sucursal
+	 * @param idProducto - El identificador del producto
+	 * @return Una lista de objetos PROMOCION que tienen el identifiacor dado
+	 */
+	public List<Promocion> darPromocionesPorSucursalyProducto(PersistenceManager pm, long idSucursal, long idProducto) 
+	{
+		Query q = pm.newQuery(SQL, "SELECT * FROM " + pp.darTablaPromocion() + " WHERE idsucursal = ? AND idproducto = ?");
+		q.setResultClass(Promocion.class);
+		q.setParameters(idSucursal, idProducto);
+		return (List<Promocion>) q.executeList();
+	}
 }
