@@ -3,7 +3,7 @@
 	"unidadPersistencia": "SuperAndes",
 	"tablas":
 	[
-		"SuperAndes_sequence"
+		"Superandes_sequence",
 		"A_SUPERMERCADO",
 		"A_SUCURSAL",
 		"A_PRODUCTO",

@@ -18,6 +18,7 @@ import com.google.gson.JsonObject;
 
 import uniandes.isis2304.superandes.negocio.Bodega;
 import uniandes.isis2304.superandes.negocio.Estante;
+import uniandes.isis2304.superandes.negocio.Pedido;
 import uniandes.isis2304.superandes.negocio.Producto;
 import uniandes.isis2304.superandes.negocio.Promocion;
 import uniandes.isis2304.superandes.negocio.Proveedor;
@@ -1141,8 +1142,55 @@ public class PersistenciaSuperAndes {
 		return sqlProveedor.darProveedores(pmf.getPersistenceManager());
 	}	
 	
+	/* ****************************************************************
+	 * 			M茅todos para manejar los PEDIDOS
+	 *****************************************************************/
+	
 	/**
-	 * M茅todo que inserta, de manera transaccional, una tupla en la tabla PROMOCION. Primero se a馻de un producto especial y luego es asociado con la promoci髇
+	 * M茅todo que inserta, de manera transaccional, una tupla en la tabla PEDIDO
+	 * Adiciona entradas al log de la aplicaci贸n
+	 * @param proveedor - El proveedor del pedido
+	 * @param sucursal - La sucursal que hace el pedido
+	 * @param fechaEntrega - La fecha de entrega del pedido
+	 * @param estadoOrden - El estado de orden del pedido
+	 * @param cantidad - El numero de unidades solicitadas
+	 * @param calificacion - La calificacion del pedido
+	 * @param costoTotal - El costo total del pedido
+	 * @return El objeto Proveedor adicionado. null si ocurre alguna Excepci贸n
+	 */
+	public Pedido adicionarPedido(long proveedor, long sucursal, Timestamp fechaEntrega, String estadoOrden, int cantidad, int calificacion, double costoTotal)
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+        Transaction tx=pm.currentTransaction();
+        try
+        {
+            tx.begin();
+            long idPedido = nextval ();
+            long tuplasInsertadas = sqlPedido.adicionarPedido(pm, idPedido, proveedor, sucursal, fechaEntrega, estadoOrden, cantidad, calificacion, costoTotal);
+            tx.commit();
+            
+            log.trace ("Inserci贸n del proveedor: " + idPedido + ": " + tuplasInsertadas + " tuplas insertadas");
+            
+            return new Pedido(idPedido, proveedor, sucursal, fechaEntrega, estadoOrden, cantidad, calificacion, costoTotal);
+        }
+        catch (Exception e)
+        {
+//        	e.printStackTrace();
+        	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+        	return null;
+        }
+        finally
+        {
+            if (tx.isActive())
+            {
+                tx.rollback();
+            }
+            pm.close();
+        }
+	}
+	
+	/**
+	 * M茅todo que inserta, de manera transaccional, una tupla en la tabla PROMOCION. Primero se a锟絘de un producto especial y luego es asociado con la promoci锟絥
 	 * Adiciona entradas al log de la aplicaci贸n
 	 * @param nombre - El nombre del producto
 	 * @param marca - Marca del producto
@@ -1195,5 +1243,4 @@ public class PersistenciaSuperAndes {
             pm.close();
         }
 	}
-	
 }
