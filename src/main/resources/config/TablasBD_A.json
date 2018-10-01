@@ -1,8 +1,9 @@
-{
+﻿{
 	"title": "Nombres de las tablas de SuperAndes Uniandes para la aplicación A",
 	"unidadPersistencia": "SuperAndes",
 	"tablas":
 	[
+		"SuperAndes_sequence"
 		"A_SUPERMERCADO",
 		"A_SUCURSAL",
 		"A_PRODUCTO",

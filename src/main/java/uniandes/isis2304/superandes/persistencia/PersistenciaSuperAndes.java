@@ -3,14 +3,19 @@ package uniandes.isis2304.superandes.persistencia;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.jdo.JDODataStoreException;
 import javax.jdo.JDOHelper;
+import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
+import javax.jdo.Transaction;
 
 import org.apache.log4j.Logger;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
+import uniandes.isis2304.superandes.negocio.Producto;
 
 public class PersistenciaSuperAndes {
 	
@@ -131,7 +136,7 @@ public class PersistenciaSuperAndes {
 	 */
 	private PersistenciaSuperAndes ()
 	{
-		pmf = JDOHelper.getPersistenceManagerFactory("Superandes");		
+		pmf = JDOHelper.getPersistenceManagerFactory("SuperAndes");		
 		crearClasesSQL ();
 		
 		// Define los nombres por defecto de las tablas de la base de datos
@@ -372,5 +377,63 @@ public class PersistenciaSuperAndes {
         log.trace ("Generando secuencia: " + resp);
         return resp;
     }
+	
+	/**
+	 * Extrae el mensaje de la exception JDODataStoreException embebido en la Exception e, que da el detalle específico del problema encontrado
+	 * @param e - La excepción que ocurrio
+	 * @return El mensaje de la excepción JDO
+	 */
+	private String darDetalleException(Exception e) 
+	{
+		String resp = "";
+		if (e.getClass().getName().equals("javax.jdo.JDODataStoreException"))
+		{
+			JDODataStoreException je = (javax.jdo.JDODataStoreException) e;
+			return je.getNestedExceptions() [0].getMessage();
+		}
+		return resp;
+	}
+
+	/* ****************************************************************
+	 * 			Métodos para manejar los PRODUCTOS
+	 *****************************************************************/
+
+	/**
+	 * Método que inserta, de manera transaccional, una tupla en la tabla PRODUCTO
+	 * Adiciona entradas al log de la aplicación
+	 * @param nombre - El nombre del tipo de bebida
+	 * @return El objeto TipoBebida adicionado. null si ocurre alguna Excepción
+	 */
+	public Producto adicionarTipoBebida(String nombre, String marca, String presentacion, String codigobarras, String unidadmedida, String categoria, String tipo)
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+        Transaction tx=pm.currentTransaction();
+        try
+        {
+            tx.begin();
+            long idProducto = nextval ();
+            long tuplasInsertadas = sqlProducto.adicionarProducto(pm, idProducto, nombre, marca, presentacion, codigobarras, unidadmedida, categoria, tipo);
+            tx.commit();
+            
+            log.trace ("Inserción de producto: " + nombre + ": " + tuplasInsertadas + " tuplas insertadas");
+            
+            return new Producto(idProducto, nombre, marca, presentacion, unidadmedida, categoria, tipo);
+        }
+        catch (Exception e)
+        {
+//        	e.printStackTrace();
+        	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+        	return null;
+        }
+        finally
+        {
+            if (tx.isActive())
+            {
+                tx.rollback();
+            }
+            pm.close();
+        }
+	}
+
 
 }
