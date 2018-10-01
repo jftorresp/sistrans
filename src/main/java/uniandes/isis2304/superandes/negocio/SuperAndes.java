@@ -346,15 +346,15 @@ public class SuperAndes {
 	 *****************************************************************/
 	
 	/**
-	 * Adiciona de manera persistente un producto
+	 * Adiciona de manera persistente una bodega
 	 * Adiciona entradas al log de la aplicación
-	 * @param nombre - El nombre del producto
-	 * @param marca - La marca del producto
-     * @param presentacion - La presentacion del producto
-	 * @param codigobarras - El código de barras del producto
-	 * @param unidadmedida - Las unidades de medida del producto
-	 * @param categoria - Ls categoria del producto (perecederos, no perecederos, aseo, abarrotes, etc)
-	 * @return El objeto Producto adicionado. null si ocurre alguna Excepción
+	 * @param idBodega - El identificador de la bodega
+	 * @param capacidadVolumen - La capacidad en volumen de la bodega (en metros cúbicos)
+     * @param capacidadPeso - La capacidad en peso de la bodega (en metros cuadrados)
+	 * @param producto - El producto que está almacenado en la bodega
+	 * @param sucursal - La sucursal a la que pertence la bodega
+	 * @param existencias - Las unidades disponibles en la bodega
+	 * @return El objeto Bodega adicionado. null si ocurre alguna Excepción
 	 */
 	public Bodega adicionarBodega(long idBodega, double capacidadVolumen, double capacidadPeso, long producto, long sucursal, int existencias)
 	{
@@ -448,6 +448,111 @@ public class SuperAndes {
 		return aumento;
 	}
 	
+	/* ****************************************************************
+	 * 			Métodos para manejar los ESTANTES
+	 *****************************************************************/
 	
-
+	/**
+	 * Adiciona de manera persistente un estante
+	 * Adiciona entradas al log de la aplicación
+	 * @param idEstante - El identificador del estante
+	 * @param capacidadVolumen - La capacidad en volumen del estante(metros cúbicos)
+	 * @param capacidadPeso - La capacidad en peso del estante (en kg)
+	 * @param producto - Identificador del producto que almacena el estante
+	 * @param sucursal - La sucursal a la que pertenece el estante
+	 * @nivelabastecimientobodega - Cantidad de unidades mínimas que debe tener en la bidega por producto
+	 * @param existencias - Las existencias disponibles en la bodega
+	 * @return El objeto Estante adicionado. null si ocurre alguna Excepción
+	 */
+	public 	Estante adicionarEstante(long idEstante, double capacidadVolumen, double capacidadPeso, long producto, long sucursal, int nivelabastecimientobodega, int existencias)
+	{
+        log.info ("Adicionando Bodega: " + idEstante);
+        Estante estante = pp.adicionarEstante(capacidadVolumen, capacidadPeso, producto, sucursal, nivelabastecimientobodega, existencias);
+        log.info ("Adicionando Bodega: " + estante);
+        return estante;
+	}
+	
+	/**
+	 * Elimina un estante por su identificador
+	 * Adiciona entradas al log de la aplicación
+	 * @param idBodega - El id del estante a eliminar
+	 * @return El número de tuplas eliminadas
+	 */
+	public long eliminarEstantePorId (long idEstante)
+	{
+		log.info ("Eliminando Estante por id: " + idEstante);
+        long resp = pp.eliminarEstantePorId(idEstante);
+        log.info ("Eliminando Estante por id: " + resp + " tuplas eliminadas");
+        return resp;
+	}
+	
+	/**
+	 * Encuentra un estante y su información básica, según su identificador
+	 * @param idEstante - El identificador del estante buscado
+	 * @return Un objeto Estante que corresponde con el id buscado y lleno con su información básica
+	 * 			null, si un estante con dicho id no existe
+	 */
+	public Estante darEstantePorId(long idEstante)
+	{
+        log.info ("Dar información de un estante por id: " + idEstante);
+        Estante estante = pp.darEstantePorId(idEstante);
+        log.info ("Buscando estante por id: " + estante != null ? estante : "NO EXISTE");
+        return estante;
+	}
+	
+	/**
+	 * Encuentra la información básica de los estantes, según su sucursal
+	 * @param sucursal - La sucursal a la que pertenece el estante
+	 * @return Una lista de Estantess con su información básica, donde todos tienen la sucursal buscada.
+	 * 	La lista vacía indica que no existen estantes con esa sucursal.
+	 */
+	public List<Estante> darEstantesPorSucursal(long sucursal)
+	{
+        log.info ("Dar información de estantes por sucursal: " + sucursal);
+        List<Estante> estantes = pp.darEstantesPorSucursal(sucursal);
+        log.info ("Dar información de Estantes por sucursal: " + estantes.size() + " estantes con esa sucursal existentes");
+        return estantes;
+ 	}
+	
+	/**
+	 * Encuentra todos los estantes en SuperAndes
+	 * Adiciona entradas al log de la aplicación
+	 * @return Una lista de objetos Estante con todos los productos que conoce la aplicación, llenos con su información básica
+	 */
+	public List<Estante> darEstantes()
+	{
+		log.info ("Consultando Estantes");
+        List<Estante> estantes = pp.darEstantes();	
+        log.info ("Consultando Estantes: " + estantes.size() + " existentes");
+        return estantes;
+	}
+	
+	/**
+	 * Encuentra todos los estantes en SuperAndes y los devuelve como una lista de VOEstante
+	 * Adiciona entradas al log de la aplicación
+	 * @return Una lista de objetos VOEstante con todas los estantes que conoce la aplicación, llenos con su información básica
+	 */
+	public List<VOEstante> darVOEsatnte()
+	{
+		log.info ("Generando los VO de estantes");        
+        List<VOEstante> voEstantes = new LinkedList<VOEstante>();
+        for (Estante estante : pp.darEstantes())
+        {
+        	voEstantes.add (estante);
+        }
+        log.info ("Generando los VO de Estantes: " + voEstantes.size() + " existentes");
+        return voEstantes;
+	}
+	
+	/**
+	 * Aumenta las existencias en 10 unidades de un estante con id dado
+	 * @return Las tuplas modificadas con el aumento de existencias
+	 */
+	public long aumentarExistenciasEstanteEnDiez(long idEstante)
+	{
+		log.info("Aumentando eixstencias de la bodega en diez");
+		long aumento = pp.aumentarExistenciasEstanteEnDiez(idEstante);
+		log.info("Estante con id: " + idEstante + "aumentada en 10 sus existencias");
+		return aumento;
+	}
 }

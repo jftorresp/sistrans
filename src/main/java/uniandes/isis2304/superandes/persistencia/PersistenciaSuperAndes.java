@@ -16,6 +16,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import uniandes.isis2304.superandes.negocio.Bodega;
+import uniandes.isis2304.superandes.negocio.Estante;
 import uniandes.isis2304.superandes.negocio.Producto;
 import uniandes.isis2304.superandes.negocio.Sucursal;
 import uniandes.isis2304.superandes.negocio.Supermercado;
@@ -887,6 +888,123 @@ public class PersistenciaSuperAndes {
 	public long aumentarExistenciasBodegaEnDiez(long idBodega)
 	{
 		return sqlBodega.aumentarExistenciasBodegasEnDiez(pmf.getPersistenceManager(), idBodega);
+	}
+	
+	/* ****************************************************************
+	 * 			Métodos para manejar los ESTANTES
+	 *****************************************************************/
+	
+	/**
+	 * Método que inserta, de manera transaccional, una tupla en la tabla ESTANTE
+	 * Adiciona entradas al log de la aplicación
+	 * @param capacidadVolumen - La capacidad en volumen del estante(metros cúbicos)
+	 * @param capacidadPeso - La capacidad en peso del estante (en kg)
+	 * @param producto - Identificador del producto que almacena el estante
+	 * @param sucursal - La sucursal a la que pertenece el estante
+	 * @nivelabastecimientobodega - Cantidad de unidades mínimas que debe tener en la bidega por producto
+	 * @param existencias - Las existencias disponibles en la bodega
+	 * @return El objeto Estante adicionado. null si ocurre alguna Excepción
+	 */
+	public Estante adicionarEstante(double capacidadVolumen, double capacidadPeso, long producto, long sucursal, int nivelabastecimientobodega, int existencias)
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+        Transaction tx=pm.currentTransaction();
+        try
+        {
+            tx.begin();
+            long idEstante = nextval ();
+            long tuplasInsertadas = sqlEstante.adicionarEstante(pm, idEstante, capacidadVolumen, capacidadPeso, producto, sucursal, nivelabastecimientobodega, existencias);
+            tx.commit();
+            
+            log.trace ("Inserción del estante: " + idEstante + ": " + tuplasInsertadas + " tuplas insertadas");
+            
+            return new Estante(idEstante, capacidadVolumen, capacidadPeso, existencias, producto, sucursal, nivelabastecimientobodega);
+        }
+        catch (Exception e)
+        {
+//        	e.printStackTrace();
+        	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+        	return null;
+        }
+        finally
+        {
+            if (tx.isActive())
+            {
+                tx.rollback();
+            }
+            pm.close();
+        }
+	}
+	
+	/**
+	 * Método que elimina, de manera transaccional, una tupla en la tabla Estante, dado el identificador del estante
+	 * Adiciona entradas al log de la aplicación
+	 * @param idBodega - El identificador del estante
+	 * @return El número de tuplas eliminadas. -1 si ocurre alguna Excepción
+	 */
+	public long eliminarEstantePorId (long idEstante) 
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+        Transaction tx=pm.currentTransaction();
+        try
+        {
+            tx.begin();
+            long resp = sqlEstante.eliminarEstantePorId(pm, idEstante);
+            tx.commit();
+            return resp;
+        }
+        catch (Exception e)
+        {
+//        	e.printStackTrace();
+        	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+            return -1;
+        }
+        finally
+        {
+            if (tx.isActive())
+            {
+                tx.rollback();
+            }
+            pm.close();
+        }
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Estante con un identificador dado
+	 * @param idEstante - El identificador del estante
+	 * @return El objeto Estante, construido con base en las tuplas de la tabla ESTANTE con el identificador dado
+	 */
+	public Estante darEstantePorId(long idEstante)
+	{
+		return sqlEstante.darEstantePorId(pmf.getPersistenceManager(), idEstante);
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Estante que tienen una sucursal dada
+	 * @param sucursal - La sucursal a la que pertenece al estante
+	 * @return La lista de objetos Estante, construidos con base en las tuplas de la tabla ESTANTE
+	 */
+	public List<Estante> darEstantesPorSucursal(long sucursal)
+	{
+		return sqlEstante.darEstantesPorSucursal(pmf.getPersistenceManager(), sucursal);
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Estante
+	 * @return La lista de objetos Estante, construidos con base en las tuplas de la tabla ESTANTEs
+	 */
+	public List<Estante> darEstantes()
+	{
+		return sqlEstante.darEstantes(pmf.getPersistenceManager());
+	}
+	
+	/**
+	 * Método que aumenta las existencias en 10 unidades de un estante con id dado
+	 * @return Las tuplas modificadas con el aumento de existencias
+	 */
+	public long aumentarExistenciasEstanteEnDiez(long idEstante)
+	{
+		return sqlEstante.aumentarExistenciasEstantesEnDiez(pmf.getPersistenceManager(), idEstante);
 	}
 	
 }
