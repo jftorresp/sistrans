@@ -55,7 +55,7 @@ public class PersistenciaSuperAndes {
 	/**
 	 * Atributo para el acceso a la tabla SUPERMERCADO de la base de datos
 	 */
-	private SQLSupermercado sqlSuperMercado;
+	private SQLSupermercado sqlSupermercado;
 	
 	/**
 	 * Atributo para el acceso a la tabla SUCURSAL de la base de datos
@@ -224,7 +224,7 @@ public class PersistenciaSuperAndes {
 	 */
 	private void crearClasesSQL ()
 	{
-		sqlSuperMercado = new SQLSupermercado(this);
+		sqlSupermercado = new SQLSupermercado(this);
 		sqlSucursal = new SQLSucursal(this);
 		sqlProducto = new SQLProducto(this);
 		sqlBodega = new SQLBodega(this);
@@ -250,103 +250,103 @@ public class PersistenciaSuperAndes {
 	}
 	
 	/**
-	 * @return La cadena de caracteres con el nombre de la tabla de Sucursal de parranderos
+	 * @return La cadena de caracteres con el nombre de la tabla de Supermercado de superandes
 	 */
-	public String darTablaSucursal()
+	public String darTablaSupermercado()
 	{
 		return tablas.get (1);
 	}
 	
 	/**
-	 * @return La cadena de caracteres con el nombre de la tabla de Producto de parranderos
+	 * @return La cadena de caracteres con el nombre de la tabla de Sucursal de superandes
 	 */
-	public String darTablaProducto()
+	public String darTablaSucursal()
 	{
 		return tablas.get (2);
 	}
 	
 	/**
-	 * @return La cadena de caracteres con el nombre de la tabla de Bodega de parranderos
+	 * @return La cadena de caracteres con el nombre de la tabla de Producto de superandes
 	 */
-	public String darTablaBodega()
+	public String darTablaProducto()
 	{
 		return tablas.get (3);
 	}
 	
 	/**
-	 * @return La cadena de caracteres con el nombre de la tabla de Estante de parranderos
+	 * @return La cadena de caracteres con el nombre de la tabla de Bodega de superandes
 	 */
-	public String darTablaEstante()
+	public String darTablaBodega()
 	{
 		return tablas.get (4);
 	}
 	
 	/**
-	 * @return La cadena de caracteres con el nombre de la tabla de Vende de parranderos
+	 * @return La cadena de caracteres con el nombre de la tabla de Estante de superandes
 	 */
-	public String darTablaVende()
+	public String darTablaEstante()
 	{
 		return tablas.get (5);
 	}
 	
 	/**
-	 * @return La cadena de caracteres con el nombre de la tabla de Proveedor de parranderos
+	 * @return La cadena de caracteres con el nombre de la tabla de Vende de superandes
 	 */
-	public String darTablaProveedor()
+	public String darTablaVende()
 	{
 		return tablas.get (6);
 	}
 	
 	/**
-	 * @return La cadena de caracteres con el nombre de la tabla de Pedido de parranderos
+	 * @return La cadena de caracteres con el nombre de la tabla de Proveedor de superandes
 	 */
-	public String darTablaPedido()
+	public String darTablaProveedor()
 	{
 		return tablas.get (7);
 	}
 	
 	/**
-	 * @return La cadena de caracteres con el nombre de la tabla de Subpedido de parranderos
+	 * @return La cadena de caracteres con el nombre de la tabla de Pedido de superandes
 	 */
-	public String darTablaSubpedido()
+	public String darTablaPedido()
 	{
 		return tablas.get (8);
 	}
 	
 	/**
-	 * @return La cadena de caracteres con el nombre de la tabla de Ofrecen de parranderos
+	 * @return La cadena de caracteres con el nombre de la tabla de Subpedido de superandes
 	 */
-	public String darTablaOfrecen()
+	public String darTablaSubpedido()
 	{
 		return tablas.get (9);
 	}
 	
 	/**
-	 * @return La cadena de caracteres con el nombre de la tabla de Cliente de parranderos
+	 * @return La cadena de caracteres con el nombre de la tabla de Ofrecen de superandes
 	 */
-	public String darTablaCliente()
+	public String darTablaOfrecen()
 	{
 		return tablas.get (10);
 	}
 	
 	/**
-	 * @return La cadena de caracteres con el nombre de la tabla de Factura de parranderos
+	 * @return La cadena de caracteres con el nombre de la tabla de Cliente de superandes
 	 */
-	public String darTablaFactura()
+	public String darTablaCliente()
 	{
 		return tablas.get (11);
 	}
 	
 	/**
-	 * @return La cadena de caracteres con el nombre de la tabla de TipoBebida de parranderos
+	 * @return La cadena de caracteres con el nombre de la tabla de Factura de superandes
 	 */
-	public String darTablaTipoBebida ()
+	public String darTablaFactura()
 	{
 		return tablas.get (12);
 	}
 	
 	/**
-	 * @return La cadena de caracteres con el nombre de la tabla de Promocion de parranderos
+	 * @return La cadena de caracteres con el nombre de la tabla de Promocion de superandes
 	 */
 	public String darTablaPromocion()
 	{
@@ -354,7 +354,7 @@ public class PersistenciaSuperAndes {
 	}
 	
 	/**
-	 * @return La cadena de caracteres con el nombre de la tabla de Transaccion de parranderos
+	 * @return La cadena de caracteres con el nombre de la tabla de Transaccion de superandes
 	 */
 	public String darTablaTransaccion()
 	{
@@ -362,9 +362,9 @@ public class PersistenciaSuperAndes {
 	}
 	
 	/**
-	 * Transacción para el generador de secuencia de Parranderos
+	 * Transacción para el generador de secuencia de SuperAndes
 	 * Adiciona entradas al log de la aplicación
-	 * @return El siguiente número del secuenciador de Parranderos
+	 * @return El siguiente número del secuenciador de SuperAndes
 	 */
 	private long nextval()
 	{
