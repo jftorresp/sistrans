@@ -656,16 +656,203 @@ public class SuperAndes {
 	 * 			Métodos para manejar los PEDIDOS
 	 *****************************************************************/
 	
-	/* ****************************************************************
-	 * 			M�todos para manejar las PROMOCIONES
-	 *****************************************************************/
 	/**
-	 * Adiciona de manera persistente una promocion
-	 * Adiciona entradas al log de la aplicación
-	 * @param nombre - El nombre del proveedor
-	 * @param calificacion - La calificacion del proveeodr
-	 * @return El objeto Proveedor adicionado. null si ocurre alguna Excepción
+	 * Adiciona de manera persistente un pedido
+	 * Adiciona entradas al log de la aplicación 
+	 * @param proveedor - El proveedor del pedido
+	 * @param sucursal - La sucursal que hace el pedido
+	 * @param fechaEntrega - La fecha de entrega del pedido
+	 * @param estadoOrden - El estado de orden del pedido
+	 * @param cantidad - El numero de unidades solicitadas
+	 * @param calificacion - La calificacion del pedido
+	 * @param costoTotal - El costo total del pedido
+	 * @return El objeto Pedido adicionado. null si ocurre alguna Excepción
 	 */
+	public Pedido adicionarPedido(long idPedido, long proveedor, long sucursal, Timestamp fechaEntrega, String estadoOrden, int cantidad, int calificacion, double costoTotal)
+	{
+        log.info ("Adicionando pedido: " + idPedido);
+        Pedido pedido = pp.adicionarPedido(proveedor, sucursal, fechaEntrega, estadoOrden, cantidad, calificacion, costoTotal);
+        log.info ("Adicionando pedido: " + pedido);
+        return pedido;
+	}
+	
+	/**
+	 * Elimina un pedido por su identificador
+	 * Adiciona entradas al log de la aplicación
+	 * @param idPedido - El id del pedido a eliminar
+	 * @return El número de tuplas eliminadas
+	 */
+	public long eliminarPedidoPorId (long idPedido)
+	{
+		log.info ("Eliminando Pedido por id: " + idPedido);
+        long resp = pp.eliminarPedidoPorId(idPedido);
+        log.info ("Eliminando Pedido por id: " + resp + " tuplas eliminadas");
+        return resp;
+	}
+	
+	/**
+	 * Encuentra un estante y su información básica, según su identificador
+	 * @param idEstante - El identificador del estante buscado
+	 * @return Un objeto Estante que corresponde con el id buscado y lleno con su información básica
+	 * 			null, si un estante con dicho id no existe
+	 */
+	public Pedido darPedidoPorId(long idPedido)
+	{
+        log.info ("Dar información de un pedido por id: " + idPedido);
+        Pedido pedido = pp.darPedidoPorId(idPedido);
+        log.info ("Buscando pedido por id: " + pedido != null ? pedido : "NO EXISTE");
+        return pedido;
+	}
+	
+	/**
+	 * Encuentra la información básica de los pedidos, según su id
+	 * @param idPedido - El identificador del pedido
+	 * @return Una lista de Pedidos con su información básica, donde todos tienen el id buscado.
+	 * 	La lista vacía indica que no existen pedidos con ese id.
+	 */
+	public List<Pedido> darPedidosPorId(long idPedido)
+	{
+        log.info ("Dar información de pedidos por id: " + idPedido);
+        List<Pedido> pedidos = pp.darPedidosPorId(idPedido);
+        log.info ("Dar información de Pedidos por id: " + pedidos.size() + " pedidos con ese id existentes");
+        return pedidos;
+ 	}
+	
+	/**
+	 * Encuentra la información básica de los pedidos, según su sucursal
+	 * @param idSucursal - El identificador de la sucursal desde donde se realia el pedido
+	 * @return Una lista de Pedidos con su información básica, donde todos tienen la sucursal buscada.
+	 * 	La lista vacía indica que no existen pedidos con esa sucursal.
+	 */
+	public List<Pedido> darPedidosPorSucursal(long idSucursal)
+	{
+        log.info ("Dar información de pedidos por sucursal: " + idSucursal);
+        List<Pedido> pedidos = pp.darPedidosPorSucursal(idSucursal);
+        log.info ("Dar información de Pedidos por sucursal: " + pedidos.size() + " pedidos con esa sucursal existentes");
+        return pedidos;
+ 	}
+	
+	/**
+	 * Encuentra la información básica de los pedidos, según su proveedor
+	 * @param idProveedor - El identificador del proveedor que realiza el pedidos
+	 * @return Una lista de Pedidos con su información básica, donde todos tienen el proveedor buscado.
+	 * 	La lista vacía indica que no existen pedidos con ese proveedor.
+	 */
+	public List<Pedido> darPedidosPorProveedor(long idProveedor)
+	{
+        log.info ("Dar información de pedidos por proveedor: " + idProveedor);
+        List<Pedido> pedidos = pp.darPedidosPorProveedor(idProveedor);
+        log.info ("Dar información de Pedidos por proveedor: " + pedidos.size() + " pedidos con ese proveedor existentes");
+        return pedidos;
+ 	}
+	
+	/**
+	 * Encuentra la información básica de los pedidos, según su proveedor y su sucursal
+	 * @param idProveedor - El identificador del proveedor que realiza el pedidos
+	 * @param idSucursal - El identificador de la sucursal desde donde se realia el pedido
+	 * @return Una lista de Pedidos con su información básica, donde todos tienen el proveedor y sucursal buscada.
+	 * 	La lista vacía indica que no existen pedidos con ese proveedor y sucursal.
+	 */
+	public List<Pedido> darPedidosPorProveedorYSucursal(long idProveedor, long idSucursal)
+	{
+        log.info ("Dar información de pedidos por proveedor y sucursal: " + idProveedor + "," + idSucursal);
+        List<Pedido> pedidos = pp.darPedidosPorProveedorYSucursal(idProveedor, idSucursal);
+        log.info ("Dar información de Pedidos por proveedor y sucursal: " + pedidos.size() + " pedidos con ese proveedor y esa sucursal existentes");
+        return pedidos;
+ 	}
+	
+	public long cambiarEstadoOrdenPedido(long idPedido, String estadoOrden)
+	{
+		log.info("Cambiando estado de orden del pedido:" + idPedido + "al estado de orden:" + estadoOrden);
+		long estado = pp.cambiarEstadoOrdenPedido(idPedido, estadoOrden);
+		log.info("Estado de orden del pedido:" + idPedido + "actualizado");
+		return estado;
+	}
+	
+	/**
+	 * Encuentra la información básica de los pedidos, según su calificacion
+	 * @param calificacion - La calificacion del pedido
+	 * @return Una lista de Pedidos con su información básica, donde todos tienen la calificacion buscada.
+	 * 	La lista vacía indica que no existen pedidos con esa calificacion
+	 */
+	public List<Pedido> darPedidosPorCalificacion(int calificacion)
+	{
+        log.info ("Dar información de pedidos por calificacion: " + calificacion);
+        List<Pedido> pedidos = pp.darPedidosPorCalificacion(calificacion);
+        log.info ("Dar información de Pedidos por calificacion: " + pedidos.size() + " pedidos con esa califiacion existentes");
+        return pedidos;
+ 	}
+	
+	public long cambiarCalificacionPedido(long idPedido, int calificacion)
+	{
+		log.info("Cambiando califiacion del pedido:" + idPedido + "a una calificacion:" + calificacion);
+		long estado = pp.cambiarCalificacionPedido(idPedido, calificacion);
+		log.info("Calificsacion del pedido:" + idPedido + "actualizada");
+		return estado;
+	}
+	
+	/**
+	 * Encuentra la información básica de los pedidos, según su fecha de entrega
+	 * @param fechaEntrega - La fecha de entrega del pedido
+	 * @return Una lista de Pedidos con su información básica, donde todos tienen la fecha de entrega buscada.
+	 * 	La lista vacía indica que no existen pedidos con esa fecha de entrega
+	 */
+	public List<Pedido> darPedidosPorFechaEntrega(Timestamp fechaEntrega)
+	{
+        log.info ("Dar información de pedidos por fecha de entrega: " + fechaEntrega);
+        List<Pedido> pedidos = pp.darPedidosPorFechaEntrega(fechaEntrega);
+        log.info ("Dar información de Pedidos por fecha de entrega: " + pedidos.size() + " pedidos con esa fecha de entrega existentes");
+        return pedidos;
+ 	}
+	
+	/**
+	 * Elimina un pedido terminado (estado de orden: entregado)
+	 * Adiciona entradas al log de la aplicación
+	 * @param estadoOrden - El estado de orden del pedido
+	 * @return El número de tuplas eliminadas
+	 */
+	public long eliminarPedidosTerminados()
+	{
+		String estadoOrden = "Entregado";
+		log.info ("Eliminando Pedidos terminados con estado de orden: " + estadoOrden);
+        long resp = pp.eliminarPedidosTerminados(estadoOrden);
+        log.info ("Eliminando Pedidos terminados: " + resp + " tuplas eliminadas");
+        return resp;
+	}
+	
+	/**
+	 * Encuentra todos los pedidos en SuperAndes
+	 * Adiciona entradas al log de la aplicación
+	 * @return Una lista de objetos Pedido con todos los pedidos que conoce la aplicación, llenos con su información básica
+	 */
+	public List<Pedido> darPedidos()
+	{
+		log.info ("Consultando Pedidos");
+        List<Pedido> pedidos = pp.darPedidos();	
+        log.info ("Consultando Pedidos: " + pedidos.size() + " existentes");
+        return pedidos;
+	}
+	
+	/**
+	 * Encuentra todos los pedidos en SuperAndes y los devuelve como una lista de VOPedido
+	 * Adiciona entradas al log de la aplicación
+	 * @return Una lista de objetos VOPedido con todas los pedidos que conoce la aplicación, llenos con su información básica
+	 */
+	public List<VOPedido> darVOPedido()
+	{
+		log.info ("Generando los VO de pedidos");        
+        List<VOPedido> voPedidos = new LinkedList<VOPedido> ();
+        for (Pedido pedido : pp.darPedidos())
+        {
+        	voPedidos.add (pedido);
+        }
+        log.info ("Generando los VO de Pedidos: " + voPedidos.size() + " existentes");
+        return voPedidos;
+	}
+
+	/* ****************************************************************
+	 * 			M�todos para manejar las PROMOCIONES
+	 *****************************************************************/
 	
 	/**
 	 * Adiciona de manera persistente una promocion

@@ -1164,12 +1164,14 @@ public class PersistenciaSuperAndes {
         Transaction tx=pm.currentTransaction();
         try
         {
-            tx.begin();
+            //adicionar subpedido
+        	
+        	tx.begin();
             long idPedido = nextval ();
             long tuplasInsertadas = sqlPedido.adicionarPedido(pm, idPedido, proveedor, sucursal, fechaEntrega, estadoOrden, cantidad, calificacion, costoTotal);
             tx.commit();
             
-            log.trace ("Inserción del proveedor: " + idPedido + ": " + tuplasInsertadas + " tuplas insertadas");
+            log.trace ("Inserción del pedido: " + idPedido + ": " + tuplasInsertadas + " tuplas insertadas");
             
             return new Pedido(idPedido, proveedor, sucursal, fechaEntrega, estadoOrden, cantidad, calificacion, costoTotal);
         }
@@ -1188,6 +1190,179 @@ public class PersistenciaSuperAndes {
             pm.close();
         }
 	}
+	
+	/**
+	 * Método que elimina, de manera transaccional, una tupla en la tabla Pedido, dado el identificador del pedido
+	 * Adiciona entradas al log de la aplicación
+	 * @param idPedido - El identificador del pedido
+	 * @return El número de tuplas eliminadas. -1 si ocurre alguna Excepción
+	 */
+	public long eliminarPedidoPorId (long idPedido) 
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+        Transaction tx=pm.currentTransaction();
+        try
+        {
+            tx.begin();
+            long resp = sqlPedido.eliminarPedidoPorId(pm, idPedido);
+            tx.commit();
+            return resp;
+        }
+        catch (Exception e)
+        {
+//        	e.printStackTrace();
+        	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+            return -1;
+        }
+        finally
+        {
+            if (tx.isActive())
+            {
+                tx.rollback();
+            }
+            pm.close();
+        }
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Pedido con un identificador dado
+	 * @param idPedido - El identificador del Pedido
+	 * @return El objeto Pedido, construido con base en las tuplas de la tabla PEDIDO con el identificador dado
+	 */
+	public Pedido darPedidoPorId(long idPedido)
+	{
+		return sqlPedido.darPedidoPorId(pmf.getPersistenceManager(), idPedido);
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Pedido que tienen un identificador dado
+	 * @param idPedido - El identificador del pedido
+	 * @return La lista de objetos Pedido, construidos con base en las tuplas de la tabla PEDIDO
+	 */
+	public List<Pedido> darPedidosPorId(long idPedido)
+	{
+		return sqlPedido.darPedidosPorId(pmf.getPersistenceManager(), idPedido);
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Pedido que tienen una sucursal dada
+	 * @param idSucursal - El identificador de la sucursal que hace el pedido
+	 * @return La lista de objetos Pedido, construidos con base en las tuplas de la tabla PEDIDO
+	 */
+	public List<Pedido> darPedidosPorSucursal(long idSucursal)
+	{
+		return sqlPedido.darPedidosPorSucursal(pmf.getPersistenceManager(), idSucursal);
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Pedido que tienen un proveedor dado
+	 * @param idProveedor - El identificador del proveedor que hace el pedido
+	 * @return La lista de objetos Pedido, construidos con base en las tuplas de la tabla PEDIDO
+	 */
+	public List<Pedido> darPedidosPorProveedor(long idProveedor)
+	{
+		return sqlPedido.darPedidosPorProveedor(pmf.getPersistenceManager(), idProveedor);
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Pedido que tienen una sucursal dada y un proveedor dado
+	 * @param idSucursal - El identificador de la sucursal que hace el pedido
+	 * @param idProveedor - El identificador del proveedor que hace el pedido
+	 * @return La lista de objetos Pedido, construidos con base en las tuplas de la tabla PEDIDO
+	 */
+	public List<Pedido> darPedidosPorProveedorYSucursal(long idProveedor, long idSucursal)
+	{
+		return sqlPedido.darPedidosPorProveedorYSucursal(pmf.getPersistenceManager(), idProveedor, idSucursal);
+	}
+	
+	/**
+	 * Método que cambia el estado de orden de un pedido (entregado o pendiente) dependiendo de si el pedido se emitió o si ya fue entregado.
+	 * @param idPedido - el identificador del pedido
+	 * @param estadoOrden - El estado de orden del pedido (pendiente, entregado)
+	 * @return El número de tuplas modificadas
+	 */
+	public long cambiarEstadoOrdenPedido(long idPedido, String estadoOrden)
+	{
+		return sqlPedido.cambiarEstadoOrdenPedido(pmf.getPersistenceManager(), idPedido, estadoOrden);
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Pedido que tienen una calificacion dada
+	 * @param calificacion - La calificacion del pedido
+	 * @return La lista de objetos Pedido, construidos con base en las tuplas de la tabla PEDIDO
+	 */
+	public List<Pedido> darPedidosPorCalificacion(int calificacion)
+	{
+		return sqlPedido.darPedidosPorCalificacion(pmf.getPersistenceManager(), calificacion);
+	}
+	
+	/**
+	 * Método que cambia la calificacion de un pedido dado
+	 * @param idPedido - El estado de orden del pedido (pendiente, entregado)
+	 * @param calificacion - La calificacion a cambiar del pedido
+	 * @return El número de tuplas modificadas
+	 */
+	public long cambiarCalificacionPedido(long idPedido, int calificacion)
+	{
+		return sqlPedido.cambiarCalificacionPedido(pmf.getPersistenceManager(), idPedido, calificacion);
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Pedido que tienen una fecha de entrega dada dada
+	 * @param fechaEntrega- La fecha de entrega del pedido
+	 * @return La lista de objetos Pedido, construidos con base en las tuplas de la tabla PEDIDO
+	 */
+	public List<Pedido> darPedidosPorFechaEntrega(Timestamp fechaEntrega)
+	{
+		return sqlPedido.darPedidosPorFechaEntrega(pmf.getPersistenceManager(), fechaEntrega);
+	}
+	
+	/**
+	 * Método que elimina, de manera transaccional, una tupla en la tabla Pedido, la cual su estado de orden es 'Entregado'
+	 * Adiciona entradas al log de la aplicación
+	 * @param estadoOrden - El estado de orden del pedido
+	 * @return El número de tuplas eliminadas. -1 si ocurre alguna Excepción
+	 */
+	public long eliminarPedidosTerminados (String estadoOrden) 
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+        Transaction tx=pm.currentTransaction();
+        try
+        {
+            estadoOrden = "Entregado";
+        	tx.begin();
+            long resp = sqlPedido.eliminarPedidosTerminados(pm, estadoOrden);
+            tx.commit();
+            return resp;
+        }
+        catch (Exception e)
+        {
+//        	e.printStackTrace();
+        	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+            return -1;
+        }
+        finally
+        {
+            if (tx.isActive())
+            {
+                tx.rollback();
+            }
+            pm.close();
+        }
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Pedido
+	 * @return La lista de objetos Pedido, construidos con base en las tuplas de la tabla PEDIDO
+	 */
+	public List<Pedido> darPedidos()
+	{
+		return sqlPedido.darPedidos(pmf.getPersistenceManager());
+	}
+	
+	/* ****************************************************************
+	 * 			Métodos para manejar las PROMOCIONES
+	 *****************************************************************/
 	
 	/**
 	 * Método que inserta, de manera transaccional, una tupla en la tabla PROMOCION. Primero se a�ade un producto especial y luego es asociado con la promoci�n
