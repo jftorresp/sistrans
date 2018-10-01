@@ -17,6 +17,7 @@ import com.google.gson.JsonObject;
 
 import uniandes.isis2304.superandes.negocio.Bodega;
 import uniandes.isis2304.superandes.negocio.Estante;
+import uniandes.isis2304.superandes.negocio.Pedido;
 import uniandes.isis2304.superandes.negocio.Producto;
 import uniandes.isis2304.superandes.negocio.Proveedor;
 import uniandes.isis2304.superandes.negocio.Sucursal;
@@ -1137,5 +1138,8 @@ public class PersistenciaSuperAndes {
 	public List<Proveedor> darProveedores()
 	{
 		return sqlProveedor.darProveedores(pmf.getPersistenceManager());
-	}	
+	}
+	
+
+	
 }
