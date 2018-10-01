@@ -555,4 +555,107 @@ public class SuperAndes {
 		log.info("Estante con id: " + idEstante + "aumentada en 10 sus existencias");
 		return aumento;
 	}
+	
+	/* ****************************************************************
+	 * 			Métodos para manejar la relación VENDE
+	 *****************************************************************/
+	
+	/* ****************************************************************
+	 * 			Métodos para manejar los PROVEEDORES
+	 *****************************************************************/
+	
+	/**
+	 * Adiciona de manera persistente un proveedor
+	 * Adiciona entradas al log de la aplicación
+	 * @param nombre - El nombre del proveedor
+	 * @param calificacion - La calificacion del proveeodr
+	 * @return El objeto Proveedor adicionado. null si ocurre alguna Excepción
+	 */
+	public Proveedor adicionarProveedor(String nombre, int calificacion)
+	{
+        log.info ("Adicionando Proveedor: " + nombre);
+        Proveedor proveedor = pp.adicionarProveedor(nombre, calificacion);
+        log.info ("Adicionando Bodega: " + proveedor);
+        return proveedor;
+	}
+	
+	/**
+	 * Elimina un proveedor por su nombre
+	 * Adiciona entradas al log de la aplicación
+	 * @param nombre - El nombre del proveedor a eliminar
+	 * @return El número de tuplas eliminadas
+	 */
+	public long eliminarProveedorPorNombre (String nombre)
+	{
+		log.info ("Eliminando Proveedor por nombre: " + nombre);
+        long resp = pp.eliminarProoveedorPorNombre(nombre);	
+        log.info ("Eliminando Proveedor por nombre: " + resp + " tuplas eliminadas");
+        return resp;
+	}
+	
+	/**
+	 * Elimina un proveedor por su identificador
+	 * Adiciona entradas al log de la aplicación
+	 * @param idProveedor - El id del proveedor a eliminar
+	 * @return El número de tuplas eliminadas
+	 */
+	public long eliminarProveedorPorId (long idProveedor)
+	{
+		log.info ("Eliminando Proveedor por id: " + idProveedor);
+        long resp = pp.eliminarProveedorPorId(idProveedor);	
+        log.info ("Eliminando Proveedor por id: " + resp + " tuplas eliminadas");
+        return resp;
+	}
+	
+	/**
+	 * Encuentra la información básica de los proveedores, según su nombre
+	 * @param nombre - El nombre del proveedor
+	 * @return Una lista de Proveedores con su información básica, donde todos tienen el nombre buscado.
+	 * 	La lista vacía indica que no existen proveedores con ese nombre.
+	 */
+	public List<Proveedor> darProveedoresPorNombre (String nombre)
+	{
+        log.info ("Dar información de proveedores por nombre: " + nombre);
+        List<Proveedor> proveedores = pp.darProveedoresPorNombre(nombre);
+        log.info ("Dar información de Proveedores por nombre: " + proveedores.size() + " proveedores con ese nombre existentes");
+        return proveedores;
+ 	}
+	
+	/**
+	 * Encuentra todos los proveedores en SuperAndes
+	 * Adiciona entradas al log de la aplicación
+	 * @return Una lista de objetos Proveedor con todos los productos que conoce la aplicación, llenos con su información básica
+	 */
+	public List<Proveedor> darProveedores()
+	{
+		log.info ("Consultando Proveedores");
+        List<Proveedor> proveedores = pp.darProveedores();	
+        log.info ("Consultando Proveedores: " + proveedores.size() + " existentes");
+        return proveedores;
+	}
+	
+	/**
+	 * Encuentra todos los proveedores en SuperAndes y los devuelve como una lista de VOProveedor
+	 * Adiciona entradas al log de la aplicación
+	 * @return Una lista de objetos VOProveedor con todas los proveedores que conoce la aplicación, llenos con su información básica
+	 */
+	public List<VOProveedor> darVOProveedor()
+	{
+		log.info ("Generando los VO de proveedores");        
+        List<VOProveedor> voProveedores = new LinkedList<VOProveedor> ();
+        for (Proveedor proveedor : pp.darProveedores())
+        {
+        	voProveedores.add (proveedor);
+        }
+        log.info ("Generando los VO de Proveedores: " + voProveedores.size() + " existentes");
+        return voProveedores;
+	}
+	
+	/* ****************************************************************
+	 * 			Métodos para manejar los PEDIDOS
+	 *****************************************************************/
+	
+	
+	
+	
 }

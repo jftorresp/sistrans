@@ -18,6 +18,7 @@ import com.google.gson.JsonObject;
 import uniandes.isis2304.superandes.negocio.Bodega;
 import uniandes.isis2304.superandes.negocio.Estante;
 import uniandes.isis2304.superandes.negocio.Producto;
+import uniandes.isis2304.superandes.negocio.Proveedor;
 import uniandes.isis2304.superandes.negocio.Sucursal;
 import uniandes.isis2304.superandes.negocio.Supermercado;
 
@@ -901,7 +902,7 @@ public class PersistenciaSuperAndes {
 	 * @param capacidadPeso - La capacidad en peso del estante (en kg)
 	 * @param producto - Identificador del producto que almacena el estante
 	 * @param sucursal - La sucursal a la que pertenece el estante
-	 * @nivelabastecimientobodega - Cantidad de unidades mínimas que debe tener en la bidega por producto
+	 * @param nivelabastecimientobodega - Cantidad de unidades mínimas que debe tener en la bodega por producto
 	 * @param existencias - Las existencias disponibles en la bodega
 	 * @return El objeto Estante adicionado. null si ocurre alguna Excepción
 	 */
@@ -1007,4 +1008,134 @@ public class PersistenciaSuperAndes {
 		return sqlEstante.aumentarExistenciasEstantesEnDiez(pmf.getPersistenceManager(), idEstante);
 	}
 	
+	/* ****************************************************************
+	 * 			Métodos para manejar la relación VENDE
+	 *****************************************************************/
+	
+	/* ****************************************************************
+	 * 			Métodos para manejar los PROVEEDORES
+	 *****************************************************************/
+	
+	/**
+	 * Método que inserta, de manera transaccional, una tupla en la tabla PROVEEDOR
+	 * Adiciona entradas al log de la aplicación
+	 * @param nombre - El nombre del proveedor
+	 * @param calificacion - La calificacion que tiene el proveedor
+	 * @return El objeto Proveedor adicionado. null si ocurre alguna Excepción
+	 */
+	public Proveedor adicionarProveedor(String nombre, int calificacion)
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+        Transaction tx=pm.currentTransaction();
+        try
+        {
+            tx.begin();
+            long idProveedor = nextval ();
+            long tuplasInsertadas = sqlProveedor.adicionarProveedor(pm, idProveedor, nombre, calificacion);
+            tx.commit();
+            
+            log.trace ("Inserción del proveedor: " + idProveedor + ": " + tuplasInsertadas + " tuplas insertadas");
+            
+            return new Proveedor(idProveedor, nombre, calificacion);
+        }
+        catch (Exception e)
+        {
+//        	e.printStackTrace();
+        	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+        	return null;
+        }
+        finally
+        {
+            if (tx.isActive())
+            {
+                tx.rollback();
+            }
+            pm.close();
+        }
+	}
+	
+	/**
+	 * Método que elimina, de manera transaccional, una tupla en la tabla Proveedor, dado el nombre del proveedor
+	 * Adiciona entradas al log de la aplicación
+	 * @param nombre - El nombre del proveedor
+	 * @return El número de tuplas eliminadas. -1 si ocurre alguna Excepción
+	 */
+	public long eliminarProoveedorPorNombre (String nombre) 
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+        Transaction tx=pm.currentTransaction();
+        try
+        {
+            tx.begin();
+            long resp = sqlProveedor.eliminarProveedorPorNombre(pm, nombre);
+            tx.commit();
+            return resp;
+        }
+        catch (Exception e)
+        {
+//        	e.printStackTrace();
+        	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+            return -1;
+        }
+        finally
+        {
+            if (tx.isActive())
+            {
+                tx.rollback();
+            }
+            pm.close();
+        }
+	}
+	
+	/**
+	 * Método que elimina, de manera transaccional, una tupla en la tabla Proveedor, dado el identificador del proveedor
+	 * Adiciona entradas al log de la aplicación
+	 * @param idProveedor - El identificador del proveedor
+	 * @return El número de tuplas eliminadas. -1 si ocurre alguna Excepción
+	 */
+	public long eliminarProveedorPorId (long idProveedor) 
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+        Transaction tx=pm.currentTransaction();
+        try
+        {
+            tx.begin();
+            long resp = sqlProveedor.eliminarProveedorPorId(pm, idProveedor);
+            tx.commit();
+            return resp;
+        }
+        catch (Exception e)
+        {
+//        	e.printStackTrace();
+        	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+            return -1;
+        }
+        finally
+        {
+            if (tx.isActive())
+            {
+                tx.rollback();
+            }
+            pm.close();
+        }
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Proveedor que tienen un nombre dado
+	 * @param nombre - El nombre del proveedor
+	 * @return La lista de objetos Proveedor, construidos con base en las tuplas de la tabla PROVEEDOR
+	 */
+	public List<Proveedor> darProveedoresPorNombre(String nombre)
+	{
+		return sqlProveedor.darProveedorPorNombre(pmf.getPersistenceManager(), nombre);
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Proveedor
+	 * @return La lista de objetos Proveedor, construidos con base en las tuplas de la tabla PROVEEDOR
+	 */
+	public List<Proveedor> darProveedores()
+	{
+		return sqlProveedor.darProveedores(pmf.getPersistenceManager());
+	}	
 }
