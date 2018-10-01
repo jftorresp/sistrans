@@ -1,5 +1,6 @@
 package uniandes.isis2304.superandes.persistencia;
 
+import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import uniandes.isis2304.superandes.negocio.Bodega;
 import uniandes.isis2304.superandes.negocio.Estante;
 import uniandes.isis2304.superandes.negocio.Pedido;
 import uniandes.isis2304.superandes.negocio.Producto;
+import uniandes.isis2304.superandes.negocio.Promocion;
 import uniandes.isis2304.superandes.negocio.Proveedor;
 import uniandes.isis2304.superandes.negocio.Sucursal;
 import uniandes.isis2304.superandes.negocio.Supermercado;
@@ -651,7 +653,7 @@ public class PersistenciaSuperAndes {
 	/**
 	 * Método que inserta, de manera transaccional, una tupla en la tabla PRODUCTO
 	 * Adiciona entradas al log de la aplicación
-	 * @param nombre - El nombre del prducto
+	 * @param nombre - El nombre del producto
 	 * @param marca - Marca del producto
 	 * @param presentacion - Presentacion del producto
 	 * @param codigobarras - Código de barras del producto
@@ -1138,8 +1140,107 @@ public class PersistenciaSuperAndes {
 	public List<Proveedor> darProveedores()
 	{
 		return sqlProveedor.darProveedores(pmf.getPersistenceManager());
+	}	
+	
+	/* ****************************************************************
+	 * 			Métodos para manejar los PEDIDOS
+	 *****************************************************************/
+	
+	/**
+	 * Método que inserta, de manera transaccional, una tupla en la tabla PEDIDO
+	 * Adiciona entradas al log de la aplicación
+	 * @param proveedor - El proveedor del pedido
+	 * @param sucursal - La sucursal que hace el pedido
+	 * @param fechaEntrega - La fecha de entrega del pedido
+	 * @param estadoOrden - El estado de orden del pedido
+	 * @param cantidad - El numero de unidades solicitadas
+	 * @param calificacion - La calificacion del pedido
+	 * @param costoTotal - El costo total del pedido
+	 * @return El objeto Proveedor adicionado. null si ocurre alguna Excepción
+	 */
+	public Pedido adicionarPedido(long proveedor, long sucursal, Timestamp fechaEntrega, String estadoOrden, int cantidad, int calificacion, double costoTotal)
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+        Transaction tx=pm.currentTransaction();
+        try
+        {
+            tx.begin();
+            long idPedido = nextval ();
+            long tuplasInsertadas = sqlPedido.adicionarPedido(pm, idPedido, proveedor, sucursal, fechaEntrega, estadoOrden, cantidad, calificacion, costoTotal);
+            tx.commit();
+            
+            log.trace ("Inserción del proveedor: " + idPedido + ": " + tuplasInsertadas + " tuplas insertadas");
+            
+            return new Pedido(idPedido, proveedor, sucursal, fechaEntrega, estadoOrden, cantidad, calificacion, costoTotal);
+        }
+        catch (Exception e)
+        {
+//        	e.printStackTrace();
+        	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+        	return null;
+        }
+        finally
+        {
+            if (tx.isActive())
+            {
+                tx.rollback();
+            }
+            pm.close();
+        }
 	}
 	
-
-	
+	/**
+	 * Método que inserta, de manera transaccional, una tupla en la tabla PROMOCION. Primero se a�ade un producto especial y luego es asociado con la promoci�n
+	 * Adiciona entradas al log de la aplicación
+	 * @param nombre - El nombre del producto
+	 * @param marca - Marca del producto
+	 * @param presentacion - Presentacion del producto
+	 * @param codigobarras - Código de barras del producto
+	 * @param unidadmedida - Las unidades de medida del producto
+	 * @param categoria - La categoria del producto (perecederos, no perecederos, aseo, abarrotes, etc)
+	 * @param tipo - El tipo de producto por categoria
+	 * @param descripcion de la promocion
+	 * @param fechainicio de la promocion
+	 * @param fechafin de la promocion
+	 * @param unidadesdisponibles para la promocion
+	 * @return El objeto Proveedor adicionado. null si ocurre alguna Excepción
+	 */
+	public Promocion adicionarPromocion(String nombre, String marca, String presentacion, String codigobarras, String unidadmedida, String categoria, String tipo, double precio, String descripcion, Timestamp fechaInicio, Timestamp fechaFin, int unidadesdisponibles)
+	{
+		
+		PersistenceManager pm = pmf.getPersistenceManager();
+        Transaction tx=pm.currentTransaction();
+        try
+        {
+        	tx.begin();
+            long idProducto = nextval ();
+            long tuplasInsertadas = sqlProducto.adicionarProducto(pm, idProducto, nombre, marca, presentacion, codigobarras, unidadmedida, categoria, tipo);
+            tx.commit();
+            
+            log.trace ("Insercion de producto: " + nombre + ": " + tuplasInsertadas + " tuplas insertadas");
+            
+            tx.begin();
+            long idPromocion = nextval ();
+            long tuplasInsertadas2 = sqlPromocion.adicionarPromocion(pm, idPromocion, precio, descripcion, fechaInicio, fechaFin, unidadesdisponibles, idProducto);
+            tx.commit();
+            
+            log.trace ("Inserción de la promocion: " + descripcion + ": " + tuplasInsertadas2 + " tuplas insertadas");
+            
+            return new  Promocion(idPromocion, precio, descripcion, fechaInicio, fechaFin, unidadesdisponibles, idProducto);
+        }
+        catch (Exception e)
+        {
+//        	e.printStackTrace();
+        	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+        	return null;
+        }
+        finally
+        {
+            if (tx.isActive())
+            {
+                tx.rollback();
+            }
+            pm.close();
+        }
+	}
 }

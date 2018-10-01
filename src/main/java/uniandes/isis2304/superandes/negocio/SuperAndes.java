@@ -1,5 +1,6 @@
 package uniandes.isis2304.superandes.negocio;
 
+import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -655,7 +656,41 @@ public class SuperAndes {
 	 * 			M茅todos para manejar los PEDIDOS
 	 *****************************************************************/
 	
+	/* ****************************************************************
+	 * 			M閠odos para manejar las PROMOCIONES
+	 *****************************************************************/
+	/**
+	 * Adiciona de manera persistente una promocion
+	 * Adiciona entradas al log de la aplicaci贸n
+	 * @param nombre - El nombre del proveedor
+	 * @param calificacion - La calificacion del proveeodr
+	 * @return El objeto Proveedor adicionado. null si ocurre alguna Excepci贸n
+	 */
 	
+	/**
+	 * Adiciona de manera persistente una promocion
+	 * Adiciona entradas al log de la aplicaci贸n 
+	 * @param nombre del producto asociado a la promocion
+	 * @param marca del producto asociado a la promocion
+	 * @param presentacion del producto asociado a la promocion
+	 * @param codigobarras del producto asociado a la promocion
+	 * @param unidadmedida del producto asociado a la promocion
+	 * @param categoria del producto asociado a la promocion
+	 * @param tipo del producto asociado a la promocion
+	 * @param precio de la promocion	
+	 * @param descripcion de la promocion
+	 * @param fechaInicio de la promocion
+	 * @param fechaFin de la promocion 
+	 * @param unidadesdisponibles de la promocion
+	 * @return El objeto Promocion adicionado. null si ocurre alguna Excepci贸n
+	 */
+	public Promocion adicionarPromocion(String nombre, String marca, String presentacion, String codigobarras, String unidadmedida, String categoria, String tipo, double precio, String descripcion, Timestamp fechaInicio, Timestamp fechaFin, int unidadesdisponibles)
+	{
+        log.info ("Adicionando producto: " + nombre);
+        Promocion promocion = pp.adicionarPromocion(nombre, marca, presentacion, codigobarras, unidadmedida, categoria, tipo, precio, descripcion, fechaInicio, fechaFin, unidadesdisponibles);
+        log.info ("Adicionando promocion: " + promocion);
+        return promocion;
+	}
 	
 	
 }

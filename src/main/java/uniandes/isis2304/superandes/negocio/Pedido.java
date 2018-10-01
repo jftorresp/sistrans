@@ -84,7 +84,7 @@ public class Pedido implements VOPedido{
 	 * @param calificacion
 	 * @param costoTotal
 	 */
-	public Pedido(long id, long producto, long proveedor, long sucursal, Timestamp fechaEntrega, String estadoOrden,
+	public Pedido(long id, long proveedor, long sucursal, Timestamp fechaEntrega, String estadoOrden,
 			int cantidad, int calificacion, double costoTotal) {
 		this.id = id;
 		this.proveedor = proveedor;
