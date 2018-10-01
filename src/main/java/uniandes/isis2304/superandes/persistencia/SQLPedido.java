@@ -6,6 +6,7 @@ import java.util.List;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import uniandes.isis2304.superandes.negocio.Cliente;
 import uniandes.isis2304.superandes.negocio.Factura;
 import uniandes.isis2304.superandes.negocio.Pedido;
 
@@ -227,5 +228,18 @@ class SQLPedido {
         Query q = pm.newQuery(SQL, "DELETE FROM " + pp.darTablaPedido() + " WHERE estadoorden = 'Entregado'");
         q.setParameters(estadoOrden);
         return (long) q.executeUnique();
+	}
+	
+	/**
+	 * Crea y ejecuta la sentencia SQL para encontrar la información de LOS PEDIDOS de la 
+	 * base de datos de Superandes
+	 * @param pm - El manejador de persistencia
+	 * @return Una lista de objetos PEDIDO
+	 */
+	public List<Pedido> darPedidos(PersistenceManager pm)
+	{
+		Query q = pm.newQuery(SQL, "SELECT * FROM " + pp.darTablaPedido());
+		q.setResultClass(Pedido.class);
+		return (List<Pedido>) q.executeList();
 	}
 }
