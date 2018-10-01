@@ -1,12 +1,11 @@
 package uniandes.isis2304.superandes.persistencia;
 
-import java.sql.Timestamp;
+
 import java.util.List;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import uniandes.isis2304.superandes.negocio.Pedido;
 import uniandes.isis2304.superandes.negocio.Subpedido;
 
 /**
