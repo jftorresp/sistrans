@@ -22,6 +22,7 @@ import uniandes.isis2304.superandes.negocio.Pedido;
 import uniandes.isis2304.superandes.negocio.Producto;
 import uniandes.isis2304.superandes.negocio.Promocion;
 import uniandes.isis2304.superandes.negocio.Proveedor;
+import uniandes.isis2304.superandes.negocio.Subpedido;
 import uniandes.isis2304.superandes.negocio.Sucursal;
 import uniandes.isis2304.superandes.negocio.Supermercado;
 
@@ -1156,22 +1157,27 @@ public class PersistenciaSuperAndes {
 	 * @param cantidad - El numero de unidades solicitadas
 	 * @param calificacion - La calificacion del pedido
 	 * @param costoTotal - El costo total del pedido
-	 * @return El objeto Proveedor adicionado. null si ocurre alguna Excepción
+	 * @return El objeto Pedido adicionado. null si ocurre alguna Excepción
 	 */
-	public Pedido adicionarPedido(long proveedor, long sucursal, Timestamp fechaEntrega, String estadoOrden, int cantidad, int calificacion, double costoTotal)
+	public Pedido adicionarPedido(long proveedor, long sucursal, Timestamp fechaEntrega, String estadoOrden, int cantidad, int calificacion, double costoTotal, long producto, int cantidadSub, double costo)
 	{
 		PersistenceManager pm = pmf.getPersistenceManager();
         Transaction tx=pm.currentTransaction();
         try
         {
             //adicionar subpedido
-        	
         	tx.begin();
-            long idPedido = nextval ();
-            long tuplasInsertadas = sqlPedido.adicionarPedido(pm, idPedido, proveedor, sucursal, fechaEntrega, estadoOrden, cantidad, calificacion, costoTotal);
+            long idPedido = nextval();
+            long tuplasInsertadas = sqlSubPedido.adicionarSubPedido(pm, idPedido, producto, cantidadSub, costo);
             tx.commit();
             
-            log.trace ("Inserción del pedido: " + idPedido + ": " + tuplasInsertadas + " tuplas insertadas");
+            log.trace ("Inserción del subpedido: " + idPedido + ": " + tuplasInsertadas + " tuplas insertadas");
+        	
+        	tx.begin();
+            long tuplasInsertadas2 = sqlPedido.adicionarPedido(pm, idPedido, proveedor, sucursal, fechaEntrega, estadoOrden, cantidad, calificacion, costoTotal);
+            tx.commit();
+            
+            log.trace ("Inserción del pedido: " + idPedido + ": " + tuplasInsertadas2 + " tuplas insertadas");
             
             return new Pedido(idPedido, proveedor, sucursal, fechaEntrega, estadoOrden, cantidad, calificacion, costoTotal);
         }
@@ -1358,6 +1364,113 @@ public class PersistenciaSuperAndes {
 	public List<Pedido> darPedidos()
 	{
 		return sqlPedido.darPedidos(pmf.getPersistenceManager());
+	}
+	
+	/* ****************************************************************
+	 * 			Métodos para manejar los SUBPEDIDOS
+	 *****************************************************************/
+	
+	/**
+	 * Método que inserta, de manera transaccional, una tupla en la tabla SUBPEDIDO
+	 * Adiciona entradas al log de la aplicación
+	 * @param producto - El producto del subpedido
+	 * @param cantidad - La cantidad de unidades pedidas por producto
+	 * @param costo - El costo del subpedido
+	 * @return El objeto Subpedido adicionado. null si ocurre alguna Excepción
+	 */
+	public Subpedido adicionarSubPedido(long producto, int cantidad, double costo)
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+        Transaction tx=pm.currentTransaction();
+        try
+        {
+            //adicionar subpedido
+        	
+        	tx.begin();
+            long idPedido = nextval ();
+            long tuplasInsertadas = sqlSubPedido.adicionarSubPedido(pm, idPedido, producto, cantidad, costo);
+            tx.commit();
+            
+            log.trace ("Inserción del pedido: " + idPedido + ": " + tuplasInsertadas + " tuplas insertadas");
+            
+            return new Subpedido(producto, idPedido, cantidad, costo);
+        }
+        catch (Exception e)
+        {
+//        	e.printStackTrace();
+        	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+        	return null;
+        }
+        finally
+        {
+            if (tx.isActive())
+            {
+                tx.rollback();
+            }
+            pm.close();
+        }
+	}
+	
+	/**
+	 * Método que elimina, de manera transaccional, una tupla en la tabla Subpedido, dado el identificador del pedido
+	 * Adiciona entradas al log de la aplicación
+	 * @param idPedido - El identificador del pedido
+	 * @return El número de tuplas eliminadas. -1 si ocurre alguna Excepción
+	 */
+	public long eliminarSubPedidoPorId (long idPedido) 
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+        Transaction tx=pm.currentTransaction();
+        try
+        {
+            tx.begin();
+            long resp = sqlSubPedido.eliminarSubPedidoPorId(pm, idPedido);
+            tx.commit();
+            return resp;
+        }
+        catch (Exception e)
+        {
+//        	e.printStackTrace();
+        	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+            return -1;
+        }
+        finally
+        {
+            if (tx.isActive())
+            {
+                tx.rollback();
+            }
+            pm.close();
+        }
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Subpedido con un identificador dado
+	 * @param idPedido - El identificador del Pedido
+	 * @return El objeto Subpedido, construido con base en las tuplas de la tabla SUBPEDIDO con el identificador dado
+	 */
+	public Subpedido darSubPedidoPorId(long idPedido)
+	{
+		return sqlSubPedido.darSubPedidoPorId(pmf.getPersistenceManager(), idPedido);
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Subpedido que tienen un producto dado
+	 * @param producto - El identificador del producto pedido
+	 * @return La lista de objetos Subpedido, construidos con base en las tuplas de la tabla SUBPEDIDO
+	 */
+	public List<Subpedido> darSubPedidosPorProducto(long producto)
+	{
+		return sqlSubPedido.darSubPedidosPorProducto(pmf.getPersistenceManager(), producto);
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Subpedido
+	 * @return La lista de objetos Subpedido, construidos con base en las tuplas de la tabla `SUBPEDIDO
+	 */
+	public List<Subpedido> darSubPedidos()
+	{
+		return sqlSubPedido.darSubPedidos(pmf.getPersistenceManager());
 	}
 	
 	/* ****************************************************************

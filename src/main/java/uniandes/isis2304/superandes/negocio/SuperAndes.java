@@ -668,10 +668,10 @@ public class SuperAndes {
 	 * @param costoTotal - El costo total del pedido
 	 * @return El objeto Pedido adicionado. null si ocurre alguna Excepción
 	 */
-	public Pedido adicionarPedido(long idPedido, long proveedor, long sucursal, Timestamp fechaEntrega, String estadoOrden, int cantidad, int calificacion, double costoTotal)
+	public Pedido adicionarPedido(long idPedido, long proveedor, long sucursal, Timestamp fechaEntrega, String estadoOrden, int cantidad, int calificacion, double costoTotal, long producto, int cantidadSub, double costo)
 	{
         log.info ("Adicionando pedido: " + idPedido);
-        Pedido pedido = pp.adicionarPedido(proveedor, sucursal, fechaEntrega, estadoOrden, cantidad, calificacion, costoTotal);
+        Pedido pedido = pp.adicionarPedido(proveedor, sucursal, fechaEntrega, estadoOrden, cantidad, calificacion, costoTotal, producto, cantidadSub, costo);
         log.info ("Adicionando pedido: " + pedido);
         return pedido;
 	}
@@ -691,10 +691,10 @@ public class SuperAndes {
 	}
 	
 	/**
-	 * Encuentra un estante y su información básica, según su identificador
-	 * @param idEstante - El identificador del estante buscado
-	 * @return Un objeto Estante que corresponde con el id buscado y lleno con su información básica
-	 * 			null, si un estante con dicho id no existe
+	 * Encuentra un pedido y su información básica, según su identificador
+	 * @param idPedido - El identificador del pedido buscado
+	 * @return Un objeto Pedido que corresponde con el id buscado y lleno con su información básica
+	 * 			null, si un pedido con dicho id no existe
 	 */
 	public Pedido darPedidoPorId(long idPedido)
 	{
@@ -849,6 +849,100 @@ public class SuperAndes {
         log.info ("Generando los VO de Pedidos: " + voPedidos.size() + " existentes");
         return voPedidos;
 	}
+	
+	/* ****************************************************************
+	 * 			M�todos para manejar los SUBPEDIDOS
+	 *****************************************************************/
+	
+	/**
+	 * Adiciona de manera persistente un subpedido
+	 * Adiciona entradas al log de la aplicación 
+	 * @param producto - El producto del subpedido
+	 * @param cantidad - La cantidad de unidades pedidas por producto
+	 * @param costo - El costo del subpedido
+	 * @return El objeto Subpedido adicionado. null si ocurre alguna Excepción
+	 */
+	public Subpedido adicionarSubPedido(long idPedido, long producto, int cantidadSub, double costo)
+	{
+        log.info ("Adicionando pedido: " + idPedido);
+        Subpedido subpedido = pp.adicionarSubPedido(producto, cantidadSub, costo);
+        log.info ("Adicionando pedido: " + subpedido);
+        return subpedido;
+	}
+	
+	/**
+	 * Elimina un subpedido por su identificador
+	 * Adiciona entradas al log de la aplicación
+	 * @param idPedido - El id del pedido a eliminar
+	 * @return El número de tuplas eliminadas
+	 */
+	public long eliminarSubPedidoPorId (long idPedido)
+	{
+		log.info ("Eliminando SubPedido por id: " + idPedido);
+        long resp = pp.eliminarSubPedidoPorId(idPedido);
+        log.info ("Eliminando SubPedido por id: " + resp + " tuplas eliminadas");
+        return resp;
+	}
+	
+	/**
+	 * Encuentra un subpedido y su información básica, según su identificador
+	 * @param idEstante - El identificador del estante buscado
+	 * @return Un objeto Estante que corresponde con el id buscado y lleno con su información básica
+	 * 			null, si un subpedido con dicho id no existe
+	 */
+	public Subpedido darSubPedidoPorId(long idPedido)
+	{
+        log.info ("Dar información de un subpedido por id: " + idPedido);
+        Subpedido subpedido = pp.darSubPedidoPorId(idPedido);
+        log.info ("Buscando subpedido por id: " + subpedido != null ? subpedido : "NO EXISTE");
+        return subpedido;
+	}
+	
+	/**
+	 * Encuentra la información básica de los subpedidos, según su producto
+	 * @param idProducto - El identificador del producto pedido
+	 * @return Una lista de SubPedidos con su información básica, donde todos tienen el producto buscado.
+	 * 	La lista vacía indica que no existen subpedidos con ese producto.
+	 */
+	public List<Subpedido> darSubPedidosPorProducto(long idProducto)
+	{
+        log.info ("Dar información de subpedidos por producto: " + idProducto);
+        List<Subpedido> subpedidos = pp.darSubPedidosPorProducto(idProducto);
+        log.info ("Dar información de SubPedidos por producto: " + subpedidos.size() + " pedidos con ese producto existentes");
+        return subpedidos;
+ 	}
+	
+	/**
+	 * Encuentra todos los subpedidos en SuperAndes
+	 * Adiciona entradas al log de la aplicación
+	 * @return Una lista de objetos Subpedido con todos los subpedidos que conoce la aplicación, llenos con su información básica
+	 */
+	public List<Subpedido> darSubPedidos()
+	{
+		log.info ("Consultando SubPedidos");
+        List<Subpedido> subpedidos = pp.darSubPedidos();	
+        log.info ("Consultando SubPedidos: " + subpedidos.size() + " existentes");
+        return subpedidos;
+	}
+	
+	/**
+	 * Encuentra todos los subpedidos en SuperAndes y los devuelve como una lista de VOSubpedido
+	 * Adiciona entradas al log de la aplicación
+	 * @return Una lista de objetos VOSubpedido con todas los subpedidos que conoce la aplicación, llenos con su información básica
+	 */
+	public List<VOSubpedido> darVOSubPedido()
+	{
+		log.info ("Generando los VO de subpedidos");        
+        List<VOSubpedido> voSubPedidos = new LinkedList<VOSubpedido> ();
+        for (Subpedido subpedido : pp.darSubPedidos())
+        {
+        	voSubPedidos.add (subpedido);
+        }
+        log.info ("Generando los VO de SubPedidos: " + voSubPedidos.size() + " existentes");
+        return voSubPedidos;
+	}
+	
+	
 
 	/* ****************************************************************
 	 * 			M�todos para manejar las PROMOCIONES
