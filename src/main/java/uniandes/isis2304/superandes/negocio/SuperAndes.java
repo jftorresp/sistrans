@@ -942,8 +942,84 @@ public class SuperAndes {
         return voSubPedidos;
 	}
 	
+	/* ****************************************************************
+	 * 			M�todos para manejar la relación OFRECEN
+	 *****************************************************************/
 	
-
+	/**
+	 * Adiciona de manera persistente el hecho de que un producto es ofrecido por un proveedor
+	 * Adiciona entradas al log de la aplicación 
+	 * @param idProducto - El identificador del producto
+	 * @param idProveedor - El identificador del proveedor
+	 * @param costo - el costo del producto según el proveedor
+	 * @return El objeto Ofrecen adicionado. null si ocurre alguna Excepción
+	 */
+	public Ofrecen adicionarOfrecen(long idProducto, long idProveedor, double costo)
+	{
+        log.info ("Adicionando ofrecen: [" + idProducto + ", " + idProveedor + "]");
+        Ofrecen ofrecen = pp.adicionarOfrecen(idProducto, idProveedor, costo);
+        log.info ("Adicionando ofrecen: " + ofrecen);
+        return ofrecen;
+	}
+	
+	/**
+	 * Elimina de manera persistente el hecho de que un producto es ofrecido por un proveedor
+	 * Adiciona entradas al log de la aplicación
+	 * @param idProducto - El identificador del producto
+	 * @param idProveedor - El identificador del proveedor
+	 * @return El número de tuplas eliminadas
+	 */
+	public long eliminarOfrecen(long idProducto, long idProveedor)
+	{
+		log.info ("Eliminando ofrecen");
+        long resp = pp.eliminarOfrecen(idProducto, idProveedor);
+        log.info ("Eliminando ofrecen: " + resp + " tuplas eliminadas");
+        return resp;
+	}
+	
+	/**
+	 * Encuentra todos los OFRECEN en SuperAndes
+	 * Adiciona entradas al log de la aplicación
+	 * @return Una lista de objetos Ofrecen con todos los ofrecen que conoce la aplicación, llenos con su información básica
+	 */
+	public List<Ofrecen> darOfrecen()
+	{
+		log.info ("Listando Ofrecen");
+        List<Ofrecen> ofrecen = pp.darOfrecen();
+        log.info ("Listando ofrecen: Listo!");
+        return ofrecen;
+	}
+	
+	/**
+	 * Encuentra todos los proveedores y la cantidad de productos que ofrecen en Superandes
+	 * Adiciona entradas al log de la aplicación
+	 * @return Una lista de objetos con todos los proveedores y la cantidad de productos que ofrecen y que conoce la aplicación, llenos con su información básica
+	 */
+	public List<Object []> darProveedorYCantidadProductosOfrecen()
+	{
+		log.info ("Listando los proveedores y la cantidad de productos que ofrecen");
+        List<Object []> pYp = pp.darProveedorYCantidadProductosOfrecen();
+        log.info ("Listando proveedores y la cantidad de productos que ofrecen: Listo!");
+        return pYp;
+	}
+	
+	/**
+	 * Encuentra todos los ofrecen en SuperAndes y los devuelve como VO
+	 * Adiciona entradas al log de la aplicación
+	 * @return Una lista de objetos VOOfrecen con todas los Ofrecen que conoce la aplicación, llenos con su información básica
+	 */
+	public List<VOOfrecen> darVOOfrecen()
+	{
+		log.info ("Generando los VO de ofrecen");        
+        List<VOOfrecen> voOfrecen = new LinkedList<VOOfrecen> ();
+        for (Ofrecen ofrecen : pp.darOfrecen())
+        {
+        	voOfrecen.add (ofrecen);
+        }
+        log.info ("Generando los VO de Ofrecen: " + voOfrecen.size() + " existentes");
+        return voOfrecen;
+	}
+	
 	/* ****************************************************************
 	 * 			M�todos para manejar las PROMOCIONES
 	 *****************************************************************/

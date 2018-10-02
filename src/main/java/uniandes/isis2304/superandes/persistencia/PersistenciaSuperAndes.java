@@ -18,6 +18,7 @@ import com.google.gson.JsonObject;
 
 import uniandes.isis2304.superandes.negocio.Bodega;
 import uniandes.isis2304.superandes.negocio.Estante;
+import uniandes.isis2304.superandes.negocio.Ofrecen;
 import uniandes.isis2304.superandes.negocio.Pedido;
 import uniandes.isis2304.superandes.negocio.Producto;
 import uniandes.isis2304.superandes.negocio.Promocion;
@@ -1473,6 +1474,103 @@ public class PersistenciaSuperAndes {
 		return sqlSubPedido.darSubPedidos(pmf.getPersistenceManager());
 	}
 	
+	/* ****************************************************************
+	 * 			Métodos para manejar la relación OFRECEN
+	 *****************************************************************/
+	
+	/**
+	 * Método que inserta, de manera transaccional, una tupla en la tabla OFRECEN
+	 * Adiciona entradas al log de la aplicación
+	 * @param idProducto - El identificador del producto
+	 * @param idProveedor - El identificador del proveedor
+	 * @param costo - el costo del producto según el proveedor
+	 * @return El objeto Ofrecen adicionado. null si ocurre alguna Excepción
+	 */
+	public Ofrecen adicionarOfrecen(long idProducto, long idProveedor, double costo)
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+        Transaction tx=pm.currentTransaction();
+        try
+        {
+            //adicionar subpedido
+        	
+        	tx.begin();
+            long tuplasInsertadas = sqlOfrecen.adicionarOfrecen(pm, idProducto, idProveedor, costo);
+            tx.commit();
+            
+            log.trace ("Inserción de ofrecen: [" + idProducto + ", " + idProveedor + "]. " + tuplasInsertadas + " tuplas insertadas");
+            
+            return new Ofrecen(idProducto, idProveedor, costo);
+        }
+        catch (Exception e)
+        {
+//        	e.printStackTrace();
+        	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+        	return null;
+        }
+        finally
+        {
+            if (tx.isActive())
+            {
+                tx.rollback();
+            }
+            pm.close();
+        }
+	}
+	
+	/**
+	 * Método que elimina, de manera transaccional, una tupla en la tabla Ofrecen, dado el identificador del producto y del proveedor
+	 * Adiciona entradas al log de la aplicación
+	 * @param idProducto - El identificador del producto
+	 * @param idProveedor - El identificador del proveedor
+	 * @return El número de tuplas eliminadas. -1 si ocurre alguna Excepción
+	 */
+	public long eliminarOfrecen(long idProducto, long idProveedor) 
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+        Transaction tx=pm.currentTransaction();
+        try
+        {
+            tx.begin();
+            long resp = sqlOfrecen.eliminarOfrecen(pm, idProducto, idProveedor);
+            tx.commit();
+            return resp;
+        }
+        catch (Exception e)
+        {
+//        	e.printStackTrace();
+        	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+            return -1;
+        }
+        finally
+        {
+            if (tx.isActive())
+            {
+                tx.rollback();
+            }
+            pm.close();
+        }
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Ofrecen
+	 * @return La lista de objetos Ofrecen, construidos con base en las tuplas de la tabla OFRECEN
+	 */
+	public List<Ofrecen> darOfrecen()
+	{
+		return sqlOfrecen.darOfrecen(pmf.getPersistenceManager());
+	}
+	
+	/**
+	 * Método que encuentra el identificador y el número de productos que ofrecen los proveedores
+	 * @return Una lista de parejas de objetos, el primer elemento de cada pareja representa el identificador de un proveedor,
+	 * 	el segundo elemento representa el productos que ofrece.
+	 */
+	public List<Object []> darProveedorYCantidadProductosOfrecen()
+	{
+		return sqlOfrecen.darProveedorYCantidadProductosOfrecen(pmf.getPersistenceManager());
+	}
+		
 	/* ****************************************************************
 	 * 			Métodos para manejar las PROMOCIONES
 	 *****************************************************************/
