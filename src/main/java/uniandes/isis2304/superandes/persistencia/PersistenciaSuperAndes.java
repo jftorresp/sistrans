@@ -19,6 +19,7 @@ import com.google.gson.JsonObject;
 import uniandes.isis2304.superandes.negocio.Bodega;
 import uniandes.isis2304.superandes.negocio.Cliente;
 import uniandes.isis2304.superandes.negocio.Estante;
+import uniandes.isis2304.superandes.negocio.Factura;
 import uniandes.isis2304.superandes.negocio.Ofrecen;
 import uniandes.isis2304.superandes.negocio.Pedido;
 import uniandes.isis2304.superandes.negocio.Producto;
@@ -1719,6 +1720,153 @@ public class PersistenciaSuperAndes {
 	{
 		return sqlCliente.darClientes(pmf.getPersistenceManager());
 	}
+	
+	/* ****************************************************************
+	 * 			Métodos para manejar las FACTURAS
+	 *****************************************************************/
+	
+	/**
+	 * Método que inserta, de manera transaccional, una tupla en la tabla FACTURA
+	 * Adiciona entradas al log de la aplicación
+	 * @param fecha - Fecha de la factura
+	 * @param idCliente - El identificador del cliente de la factura
+	 * @param idSucursal - El identificador de la sucursal donde se generó la factura
+	 * @return El objeto Factura adicionado. null si ocurre alguna Excepción
+	 */
+	public Factura adicionarFactura(Timestamp fecha, long idCliente, long idSucursal)
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+        Transaction tx=pm.currentTransaction();
+        try
+        {
+        	
+        	tx.begin();
+        	long idFactura = nextval();
+            long tuplasInsertadas = sqlFactura.adicionarFactura(pm, idFactura, fecha, idCliente, idSucursal);
+            tx.commit();
+            
+            log.trace ("Inserción del cliente: " + idCliente + ": " + tuplasInsertadas + " tuplas insertadas");
+            
+            return new Factura(idFactura, idSucursal, fecha, idCliente);
+        }
+        catch (Exception e)
+        {
+//        	e.printStackTrace();
+        	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+        	return null;
+        }
+        finally
+        {
+            if (tx.isActive())
+            {
+                tx.rollback();
+            }
+            pm.close();
+        }
+	}
+	
+	/**
+	 * Método que elimina, de manera transaccional, una tupla en la tabla Factura, dado el identificador de la factura
+	 * Adiciona entradas al log de la aplicación
+	 * @param idFactura - El identificador de la factura
+	 * @return El número de tuplas eliminadas. -1 si ocurre alguna Excepción
+	 */
+	public long eliminarFacturaPorId (long idFactura) 
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+        Transaction tx=pm.currentTransaction();
+        try
+        {
+            tx.begin();
+            long resp = sqlFactura.eliminarFacturaPorNumero(pm, idFactura);
+            tx.commit();
+            return resp;
+        }
+        catch (Exception e)
+        {
+//        	e.printStackTrace();
+        	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+            return -1;
+        }
+        finally
+        {
+            if (tx.isActive())
+            {
+                tx.rollback();
+            }
+            pm.close();
+        }
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Factura con un identificador dado
+	 * @param idFactura- El identificador de la Factura
+	 * @return El objeto Factura, construido con base en las tuplas de la tabla FACTURA con el identificador dado
+	 */
+	public Factura darFacturaPorId(long idFactura)
+	{
+		return sqlFactura.darFacturaPorNumero(pmf.getPersistenceManager(), idFactura);
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Factura que tienen un identificador dado
+	 * @param idFactura - El identificador de la factura
+	 * @return La lista de objetos Factura, construidos con base en las tuplas de la tabla FACTURA
+	 */
+	public List<Factura> darFacturasPorId(long idFactura)
+	{
+		return sqlFactura.darFacturasPorNumero(pmf.getPersistenceManager(), idFactura);
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Factura que tienen un cliente dado
+	 * @param idCliente - El identificador del cliente de la factura
+	 * @return La lista de objetos Factura, construidos con base en las tuplas de la tabla FACTURA
+	 */
+	public List<Factura> darFacturasPorCliente(long idCliente)
+	{
+		return sqlFactura.darFacturasPorCliente(pmf.getPersistenceManager(), idCliente);
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Factura que tienen una sucursal dada
+	 * @param idSucursal - El identificador de la sucursal de la factura
+	 * @return La lista de objetos Factura, construidos con base en las tuplas de la tabla FACTURA
+	 */
+	public List<Factura> darFacturasPorSucursal(long idSucursal)
+	{
+		return sqlFactura.darFacturasPorSucursal(pmf.getPersistenceManager(), idSucursal);
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Factura que tienen una fecha dada
+	 * @param fecha - La fecha en la que se generó la factura
+	 * @return La lista de objetos Factura, construidos con base en las tuplas de la tabla FACTURA
+	 */
+	public List<Factura> darFacturasPorFecha(Timestamp fecha)
+	{
+		return sqlFactura.darFacturasPorFecha(pmf.getPersistenceManager(), fecha);
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Factura que tienen una sucursal dada y un cliente dado
+	 * @param idSucursal - El identificador de la sucursal de la factura
+	 * @param idCliente - El cliente de la factura
+	 * @return La lista de objetos Factura, construidos con base en las tuplas de la tabla FACTURA
+	 */
+	public List<Factura> darFacturasPorClienteYSucursal(long idCliente, long idSucursal)
+	{
+		return sqlFactura.darFacturasPorClienteYSucursal(pmf.getPersistenceManager(), idCliente, idSucursal);
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Factura
+	 * @return La lista de objetos Factura, construidos con base en las tuplas de la tabla FACTURA
+	 */
+	public List<Factura> darFacturas()
+	{
+		return sqlFactura.darFacturas(pmf.getPersistenceManager());
+	}
 		
 	/* ****************************************************************
 	 * 			Métodos para manejar las PROMOCIONES
@@ -1778,4 +1926,8 @@ public class PersistenciaSuperAndes {
             pm.close();
         }
 	}
+	
+	/* ****************************************************************
+	 * 			Métodos para manejar las TRANSACCIONES
+	 *****************************************************************/
 }

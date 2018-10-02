@@ -1143,6 +1143,142 @@ public class SuperAndes {
 	}
 	
 	/* ****************************************************************
+	 * 			M�todos para manejar las FACTURAS
+	 *****************************************************************/
+	
+	/**
+	 * Adiciona de manera persistente un cliente
+	 * Adiciona entradas al log de la aplicación 
+	 * @param idFactura - El identificador de la factura
+	 * @param fecha - Fecha de la factura
+	 * @param idCliente - El identificador del cliente de la factura
+	 * @param idSucursal - El identificador de la sucursal donde se generó la factura
+	 * @return El objeto Factura adicionado. null si ocurre alguna Excepción
+	 */
+	public Factura adicionarFactura(long idFactura, Timestamp fecha, long idCliente, long idSucursal)
+	{
+        log.info ("Adicionando producto: " + idFactura);
+        Factura factura = pp.adicionarFactura(fecha, idCliente, idSucursal);
+        log.info ("Adicionando cliente: " + factura);
+        return factura;
+	}
+	
+	/**
+	 * Encuentra una factura y su información básica, según su identificador
+	 * @param idFactura - El identificador de la factura buscada
+	 * @return Un objeto Factura que corresponde con el id buscado y lleno con su información básica
+	 * 			null, si uturana fac con dicho id no existe
+	 */
+	public Factura darFacturaPorId(long idFactura)
+	{
+        log.info ("Dar información de una factura por id: " + idFactura);
+        Factura factura = pp.darFacturaPorId(idFactura);
+        log.info ("Buscando factura por id: " + factura != null ? factura : "NO EXISTE");
+        return factura;
+	}
+	
+	/**
+	 * Encuentra la información básica de las facturas, según su id
+	 * @param idFactura - El identificador de la factura
+	 * @return Una lista de Facturas con su información básica, donde todos tienen el id buscado.
+	 * 	La lista vacía indica que no existen facturas con ese id.
+	 */
+	public List<Factura> darFacturasPorId(long idFactura)
+	{
+        log.info ("Dar información de facturas por id: " + idFactura);
+        List<Factura> facturas = pp.darFacturasPorId(idFactura);
+        log.info ("Dar información de facturas por id: " + facturas.size() + " facturas con ese id existentes");
+        return facturas;
+ 	}
+	
+	/**
+	 * Encuentra la información básica de las facturas, según su cliente
+	 * @param idCliente- El identificador del cliente de la factura
+	 * @return Una lista de Facturas con su información básica, donde todos tienen el cliente buscado.
+	 * 	La lista vacía indica que no existen facturas con ese cliente.
+	 */
+	public List<Factura> darFacturasPorCliente(long idCliente)
+	{
+        log.info ("Dar información de facturas por cliente: " + idCliente);
+        List<Factura> facturas = pp.darFacturasPorCliente(idCliente);
+        log.info ("Dar información de facturas por cliente: " + facturas.size() + " facturas con ese id existentes");
+        return facturas;
+ 	}
+	
+	/**
+	 * Encuentra la información básica de las facturas, según su sucursal
+	 * @param idSucursal- El identificador de la sucursal de la factura
+	 * @return Una lista de Facturas con su información básica, donde todos tienen la sucursal buscada.
+	 * 	La lista vacía indica que no existen facturas con esa sucursal.
+	 */
+	public List<Factura> darFacturasPorSucursal(long idSucursal)
+	{
+        log.info ("Dar información de facturas por sucursal: " + idSucursal);
+        List<Factura> facturas = pp.darFacturasPorId(idSucursal);
+        log.info ("Dar información de facturas por sucursal: " + facturas.size() + " facturas con esa sucursal existentes");
+        return facturas;
+ 	}
+	
+	/**
+	 * Encuentra la información básica de las facturas, según su fecha
+	 * @param fecha- La fecha de la factura
+	 * @return Una lista de Facturas con su información básica, donde todos tienen la fecha buscada.
+	 * 	La lista vacía indica que no existen facturas con esa fecha.
+	 */
+	public List<Factura> darFacturasPorFecha(Timestamp fecha)
+	{
+        log.info ("Dar información de facturas por fecha: " + fecha);
+        List<Factura> facturas = pp.darFacturasPorFecha(fecha);
+        log.info ("Dar información de facturas por fecha: " + facturas.size() + " facturas con esa fecha existentes");
+        return facturas;
+ 	}
+	
+	/**
+	 * Encuentra la información básica de las facturas, según su cliente y su sucursal
+	 * @param idSucursal- El identificador de la sucursal de la factura
+	 * @param idCliente - El identificador del cliente de la factura
+	 * @return Una lista de Facturas con su información básica, donde todos tienen la sucursal buscada.
+	 * 	La lista vacía indica que no existen facturas con ese cliente y esa sucursal.
+	 */
+	public List<Factura> darFacturasPorClienteYSucursal(long idCliente, long idSucursal)
+	{
+        log.info ("Dar información de facturas por cliente y sucursal: " + idCliente + "," + idSucursal);
+        List<Factura> facturas = pp.darFacturasPorClienteYSucursal(idCliente, idSucursal);
+        log.info ("Dar información de facturas por cliente y sucursal: " + facturas.size() + " facturas con ese cliente y sucursal existentes");
+        return facturas;
+ 	}
+	
+	/**
+	 * Encuentra todos las facturas en SuperAndes
+	 * Adiciona entradas al log de la aplicación
+	 * @return Una lista de objetos Factura con todas las facturas que conoce la aplicación, llenos con su información básica
+	 */
+	public List<Factura> darFacturas()
+	{
+		log.info ("Consultando Facturas");
+        List<Factura> facturas = pp.darFacturas();	
+        log.info ("Consultando Facturas: " + facturas.size() + " existentes");
+        return facturas;
+	}
+	
+	/**
+	 * Encuentra todos los facturas en SuperAndes y los devuelve como una lista de VOFactura
+	 * Adiciona entradas al log de la aplicación
+	 * @return Una lista de objetos VOFactura con todas las facturas que conoce la aplicación, llenos con su información básica
+	 */
+	public List<VOFactura> darVOFactura()
+	{
+		log.info ("Generando los VO de facturas");        
+        List<VOFactura> voFacturas = new LinkedList<VOFactura> ();
+        for (Factura factura : pp.darFacturas())
+        {
+        	voFacturas.add (factura);
+        }
+        log.info ("Generando los VO de Facturas: " + voFacturas.size() + " existentes");
+        return voFacturas;
+	}
+	
+	/* ****************************************************************
 	 * 			M�todos para manejar las PROMOCIONES
 	 *****************************************************************/
 	
@@ -1170,6 +1306,10 @@ public class SuperAndes {
         log.info ("Adicionando promocion: " + promocion);
         return promocion;
 	}
+	
+	/* ****************************************************************
+	 * 			M�todos para manejar las TRANSACCIONES
+	 *****************************************************************/
 	
 	
 }

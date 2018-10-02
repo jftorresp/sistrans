@@ -3,8 +3,8 @@ package uniandes.isis2304.superandes.negocio;
 import java.sql.Timestamp;
 
 /**
- * Interfaz para los métodos get de FACTURA.
- * Sirve para proteger la información del negocio de posibles manipulaciones desde la interfaz 
+ * Interfaz para los mï¿½todos get de FACTURA.
+ * Sirve para proteger la informaciï¿½n del negocio de posibles manipulaciones desde la interfaz 
  * 
  * @author n.cobos, jf.torresp
  */
@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 public interface VOFactura {
 	
 	/* ****************************************************************
-	 * 			Métodos 
+	 * 			Mï¿½todos 
 	 *****************************************************************/
      /**
 	 * @return El numero de la factura
@@ -27,7 +27,7 @@ public interface VOFactura {
 	/**
 	 * @return El cliente de la factura
 	 */
-	public String getCliente();
+	public long getCliente();
 	
 	/**
 	 * @return La sucursal de la factura
@@ -35,7 +35,7 @@ public interface VOFactura {
 	public long getSucursal();
 	
 	/** 
-	 * @return Una cadena con la información básica
+	 * @return Una cadena con la informaciï¿½n bï¿½sica
 	 */
 	@Override
 	public String toString();
