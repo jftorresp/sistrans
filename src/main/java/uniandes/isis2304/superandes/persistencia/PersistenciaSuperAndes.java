@@ -17,6 +17,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import uniandes.isis2304.superandes.negocio.Bodega;
+import uniandes.isis2304.superandes.negocio.Cliente;
 import uniandes.isis2304.superandes.negocio.Estante;
 import uniandes.isis2304.superandes.negocio.Ofrecen;
 import uniandes.isis2304.superandes.negocio.Pedido;
@@ -1492,8 +1493,6 @@ public class PersistenciaSuperAndes {
         Transaction tx=pm.currentTransaction();
         try
         {
-            //adicionar subpedido
-        	
         	tx.begin();
             long tuplasInsertadas = sqlOfrecen.adicionarOfrecen(pm, idProducto, idProveedor, costo);
             tx.commit();
@@ -1569,6 +1568,156 @@ public class PersistenciaSuperAndes {
 	public List<Object []> darProveedorYCantidadProductosOfrecen()
 	{
 		return sqlOfrecen.darProveedorYCantidadProductosOfrecen(pmf.getPersistenceManager());
+	}
+	
+	/* ****************************************************************
+	 * 			Métodos para manejar los CLIENTES
+	 *****************************************************************/
+	
+	/**
+	 * Método que inserta, de manera transaccional, una tupla en la tabla CLIENTE
+	 * Adiciona entradas al log de la aplicación
+	 * @param nombre - El nombre del cliente
+	 * @param correo - El correo del cliente
+	 * @param tipo - El tipo de cliente(PERSONA, EMPRESA)
+	 * @param direccion - La direccion del cliente
+	 * @return El objeto Cliente adicionado. null si ocurre alguna Excepción
+	 */
+	public Cliente adicionarCliente(String nombre, String correo, String tipo, String direccion)
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+        Transaction tx=pm.currentTransaction();
+        try
+        {
+        	
+        	tx.begin();
+        	long idCliente = nextval();
+            long tuplasInsertadas = sqlCliente.adicionarCliente(pm, idCliente, nombre, correo, tipo, direccion);
+            tx.commit();
+            
+            log.trace ("Inserción del cliente: " + idCliente + ": " + tuplasInsertadas + " tuplas insertadas");
+            
+            return new Cliente(idCliente, nombre, direccion, correo, tipo);
+        }
+        catch (Exception e)
+        {
+//        	e.printStackTrace();
+        	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+        	return null;
+        }
+        finally
+        {
+            if (tx.isActive())
+            {
+                tx.rollback();
+            }
+            pm.close();
+        }
+	}
+	
+	/**
+	 * Método que elimina, de manera transaccional, una tupla en la tabla Cliente, dado el identificador del cliente
+	 * Adiciona entradas al log de la aplicación
+	 * @param idCliente - El identificador del cliente
+	 * @return El número de tuplas eliminadas. -1 si ocurre alguna Excepción
+	 */
+	public long eliminarClientePorId (long idCliente) 
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+        Transaction tx=pm.currentTransaction();
+        try
+        {
+            tx.begin();
+            long resp = sqlCliente.eliminarClientePorId(pm, idCliente);
+            tx.commit();
+            return resp;
+        }
+        catch (Exception e)
+        {
+//        	e.printStackTrace();
+        	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+            return -1;
+        }
+        finally
+        {
+            if (tx.isActive())
+            {
+                tx.rollback();
+            }
+            pm.close();
+        }
+	}
+	
+	/**
+	 * Método que elimina, de manera transaccional, una tupla en la tabla Cliente, dado el nombre del cliente
+	 * Adiciona entradas al log de la aplicación
+	 * @param nombre - El nombre del cliente
+	 * @return El número de tuplas eliminadas. -1 si ocurre alguna Excepción
+	 */
+	public long eliminarClientePorNombre(String nombre) 
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+        Transaction tx=pm.currentTransaction();
+        try
+        {
+            tx.begin();
+            long resp = sqlCliente.eliminarClientePorNombre(pm, nombre);
+            tx.commit();
+            return resp;
+        }
+        catch (Exception e)
+        {
+//        	e.printStackTrace();
+        	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+            return -1;
+        }
+        finally
+        {
+            if (tx.isActive())
+            {
+                tx.rollback();
+            }
+            pm.close();
+        }
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Cliente con un identificador dado
+	 * @param idCliente - El identificador del Cliente
+	 * @return El objeto Cliente, construido con base en las tuplas de la tabla CLIENTE con el identificador dado
+	 */
+	public Cliente darClientePorId(long idCliente)
+	{
+		return sqlCliente.darClientePorId(pmf.getPersistenceManager(), idCliente);
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Cliente que tienen un nombre dado
+	 * @param nombre - El nombre del cliente
+	 * @return La lista de objetos Cliente, construidos con base en las tuplas de la tabla CLIENTE
+	 */
+	public List<Cliente> darClientesPorNombre(String nombre)
+	{
+		return sqlCliente.darClientesPorNombre(pmf.getPersistenceManager(), nombre);
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Cliente que tienen un tipo dado (PERSONA, EMPRESA)
+	 * @param tipo - El tipo del cliente (PERSONA, EMPRESA)
+	 * @return La lista de objetos Cliente, construidos con base en las tuplas de la tabla CLIENTE
+	 */
+	public List<Cliente> darClientesPorTipo(String tipo)
+	{
+		return sqlCliente.darClientesPorTipo(pmf.getPersistenceManager(), tipo);
+	}
+	
+	/**
+	 * Método que consulta todas las tuplas en la tabla Cliente
+	 * @return La lista de objetos Cliente, construidos con base en las tuplas de la tabla CLIENTE
+	 */
+	public List<Cliente> darClientes()
+	{
+		return sqlCliente.darClientes(pmf.getPersistenceManager());
 	}
 		
 	/* ****************************************************************

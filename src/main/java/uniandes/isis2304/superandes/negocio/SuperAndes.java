@@ -1021,6 +1021,128 @@ public class SuperAndes {
 	}
 	
 	/* ****************************************************************
+	 * 			M�todos para manejar los CLIENTES
+	 *****************************************************************/
+	
+	/**
+	 * Adiciona de manera persistente un cliente
+	 * Adiciona entradas al log de la aplicación 
+	 * @param nombre - El nombre del cliente
+	 * @param correo - El correo del cliente
+	 * @param tipo - El tipo de cliente(PERSONA, EMPRESA)
+	 * @param direccion - La direccion del cliente
+	 * @param unidadesdisponibles de la promocion
+	 * @return El objeto Cliente adicionado. null si ocurre alguna Excepción
+	 */
+	public Cliente adicionarCliente(String nombre, String correo, String tipo, String direccion)
+	{
+        log.info ("Adicionando producto: " + nombre);
+        Cliente cliente = pp.adicionarCliente(nombre, correo, tipo, direccion);
+        log.info ("Adicionando cliente: " + cliente);
+        return cliente;
+	}
+	
+	/**
+	 * Elimina un cliente por su identificador
+	 * Adiciona entradas al log de la aplicación
+	 * @param idCliente - El id del cliente a eliminar
+	 * @return El número de tuplas eliminadas
+	 */
+	public long eliminarClientePorId (long idCliente)
+	{
+		log.info ("Eliminando Cliente por id: " + idCliente);
+        long resp = pp.eliminarClientePorId(idCliente);
+        log.info ("Eliminando Cliente por id: " + resp + " tuplas eliminadas");
+        return resp;
+	}
+	
+	/**
+	 * Elimina un cliente por su nombre
+	 * Adiciona entradas al log de la aplicación
+	 * @param nombre - El nombre del cliente que se va a eliminar
+	 * @return El número de tuplas eliminadas
+	 */
+	public long eliminarClientePorNombre (String nombre)
+	{
+		log.info ("Eliminando Cliente por nombre: " + nombre);
+        long resp = pp.eliminarClientePorNombre(nombre);
+        log.info ("Eliminando Cliente por nombre: " + resp + " tuplas eliminadas");
+        return resp;
+	}
+	
+	/**
+	 * Encuentra un cliente y su información básica, según su identificador
+	 * @param idCliente - El identificador del cliente buscado
+	 * @return Un objeto Cliente que corresponde con el id buscado y lleno con su información básica
+	 * 			null, si un cliente con dicho id no existe
+	 */
+	public Cliente darClientePorId(long idCliente)
+	{
+        log.info ("Dar información de un subpedido por id: " + idCliente);
+        Cliente cliente = pp.darClientePorId(idCliente);
+        log.info ("Buscando cliente por id: " + cliente != null ? cliente : "NO EXISTE");
+        return cliente;
+	}
+	
+	/**
+	 * Encuentra la información básica de los clientes, según su nombre
+	 * @param nombre - El nombre del cliente
+	 * @return Una lista de Clientes con su información básica, donde todos tienen el nombre buscado.
+	 * 	La lista vacía indica que no existen clientes con ese nombre.
+	 */
+	public List<Cliente> darClientesPorNombre(String nombre)
+	{
+        log.info ("Dar información de clientes por nombre: " + nombre);
+        List<Cliente> clientes = pp.darClientesPorNombre(nombre);
+        log.info ("Dar información de clientes por nombre: " + clientes.size() + " clientes con ese nombre existentes");
+        return clientes;
+ 	}
+	
+	/**
+	 * Encuentra la información básica de los clientes, según su tipo
+	 * @param tipo - El tipo del cliente
+	 * @return Una lista de Clientes con su información básica, donde todos tienen el tipo buscado.
+	 * 	La lista vacía indica que no existen clientes con ese tipo.
+	 */
+	public List<Cliente> darClientesPorTipo(String tipo)
+	{
+        log.info ("Dar información de clientes por tipo: " + tipo);
+        List<Cliente> clientes = pp.darClientesPorTipo(tipo);
+        log.info ("Dar información de clientes por tipo: " + clientes.size() + " clientes con ese tipo existentes");
+        return clientes;
+ 	}
+	
+	/**
+	 * Encuentra todos los clientes en SuperAndes
+	 * Adiciona entradas al log de la aplicación
+	 * @return Una lista de objetos Cliente con todos los clientes que conoce la aplicación, llenos con su información básica
+	 */
+	public List<Cliente> darClientes()
+	{
+		log.info ("Consultando Clientes");
+        List<Cliente> clientes = pp.darClientes();	
+        log.info ("Consultando Clientes: " + clientes.size() + " existentes");
+        return clientes;
+	}
+	
+	/**
+	 * Encuentra todos los clientes en SuperAndes y los devuelve como una lista de VOCliente
+	 * Adiciona entradas al log de la aplicación
+	 * @return Una lista de objetos VOCliente con todas los clientes que conoce la aplicación, llenos con su información básica
+	 */
+	public List<VOCliente> darVOCliente()
+	{
+		log.info ("Generando los VO de pedidos");        
+        List<VOCliente> voClientes = new LinkedList<VOCliente> ();
+        for (Cliente cliente : pp.darClientes())
+        {
+        	voClientes.add (cliente);
+        }
+        log.info ("Generando los VO de Clientes: " + voClientes.size() + " existentes");
+        return voClientes;
+	}
+	
+	/* ****************************************************************
 	 * 			M�todos para manejar las PROMOCIONES
 	 *****************************************************************/
 	
